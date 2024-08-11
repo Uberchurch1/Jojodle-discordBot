@@ -15,11 +15,12 @@ from discord import interactions
 import datetime
 
 class Character:
-    def __init__(self,name,parts,colors,range):
+    def __init__(self,name,parts,colors,range,ally):
         self.name = name
         self.parts = parts
         self.colors = colors
         self.range = range
+        self.ally = ally
 
     def GetName(self):
         return self.name
@@ -29,6 +30,8 @@ class Character:
         return self.colors
     def GetRange(self):
         return self.range
+    def Getally(self):
+        return self.ally
 
     #compare functions return 0 if not the same, 1 if exactly the same, 2 if some are the same
     def CompareName(self,other):
@@ -58,81 +61,87 @@ class Character:
             return 1
         else:
             return 0
+        
+    def CompareAlly(self,other):
+        if self.ally == other.ally:
+            return 1
+        else:
+            return 0
 
 class CharactersList:
     charArray = [
-        #["name", "part(s)", "colors", "stand range"]
-        ["Jonathan Joestar", "1", "Blue,Brown,Grey", "N/A"],
-        ["Will Anthonio Zeppeli", "1", "Black,White,Red", "N/A"],
-        ["Robert E. O. Speedwagon", "1,2", "Purple,Green,Yellow", "N/A"],
-        ["Dio Brando", "1,3,6", "Yellow,Green,Black", "Close"],
-        ["Frog", "1", "Green,Black,White", "N/A"],
-        ["Straizo", "1,2", "Black,Purple,Red", "N/A"],
+        #["name", "part(s)", "colors", "stand range", "alliance"]
+        ["Jonathan Joestar",        "1",        "Blue,Brown,Grey", "N/A", "Hero"],
+        ["Will Anthonio Zeppeli",   "1",        "Black,White,Red", "N/A", "Hero"],
+        ["Robert E. O. Speedwagon", "1,2",      "Purple,Green,Yellow", "N/A", "Hero"],
+        ["Dio Brando",              "1,3,6",    "Yellow,Green,Black", "Close", "Villain"],
+        ["Frog",                    "1",        "Green,Black,White", "N/A", "N/A"],
+        ["Straizo",                 "1,2",      "Black,Purple,Red", "N/A", "N/A"],
 
-        ["Joseph Joestar", "2,3,4", "Brown,Green,Blue", "Close"],
-        ["Caesar Anthonio Zeppeli", "2", "White,Blue,Pink", "N/A"],
-        ["Lisa Lisa", "2", "Black,Red", "N/A"],
-        ["Rudol von Stroheim", "2", "Black,Green,Yellow", "N/A"],
-        ["Smokey Brown", "2", "Brown,Gray,Blue", "N/A"],
-        ["Suzi Q", "2,3", "Green,Yellow,White", "N/A"],
-        ["Kars", "2", "Purple,Pink", "N/A"],
-        ["Esidisi", "2", "Blue,Tan", "N/A"],
-        ["Wamuu", "2", "Tan,Yellow,Red", "N/A"],
+        ["Joseph Joestar",          "2,3,4",    "Brown,Green,Blue", "Close", "Hero"],
+        ["Caesar Anthonio Zeppeli", "2",        "White,Blue,Pink", "N/A", "Hero"],
+        ["Lisa Lisa",               "2",        "Black,Red", "N/A", "Hero"],
+        ["Rudol von Stroheim",      "2",        "Black,Green,Yellow", "N/A", "Hero"],
+        ["Smokey Brown",            "2",        "Brown,Gray,Blue", "N/A", "Hero"],
+        ["Suzi Q",                  "2,3",      "Green,Yellow,White", "N/A", "Hero"],
+        ["Kars",                    "2",        "Purple,Pink", "N/A", "Villain"],
+        ["Esidisi",                 "2",        "Blue,Tan", "N/A", "Villain"],
+        ["Wamuu",                   "2",        "Tan,Yellow,Red", "N/A", "Villain"],
 
-        ["Jotaro Joestar", "3,4,6", "Black,Gold,Green", "Close"],
-        ["Muhammad Avdol", "3", "Red,Gold,Tan", "Close"],
-        ["Kakyoin Noriaki", "3", "Red,Green,Gold", "Long"],
-        ["Jean Pierre Polnareff", "3,5", "Grey,Black,Red", "Close"],
-        ["Iggy", "3", "Black,White,Yellow", "Close"],
-        ["Holy Kujo", "3", "Pink,Tan,Yellow", "Close"],
-        ["Enya the Hag", "3", "Brown,Silver,Yellow", "Long"],
-        ["Vanilla Ice", "3", "Purple,Pink,Tan", "Close"],
-        ["Hol Horse", "3", "Yellow, Green, Brown", "Long"],
-        ["Oingo", "3", "Blue,Red,Green", "N/A"],
-        ["Boingo", "3", "Green,Tan,Yellow", "N/A"],
-        ["Telence T. D'Arby", "3", "Green,White,Purple", "Close"],
-        ["Daniel J. D'Arby", "3", "Red,White,Pink", "Close"],
-        ["Mannish Boy", "3", "Tan,Red,Blue", "Close"],
-        ["Strength", "3", "Black,White,Brown", "Close"],
+        ["Jotaro Joestar",          "3,4,6",    "Black,Gold,Green", "Close", "Hero"],
+        ["Muhammad Avdol",          "3",        "Red,Gold,Tan", "Close", "Hero"],
+        ["Kakyoin Noriaki",         "3",        "Red,Green,Gold", "Long", "Hero"],
+        ["Jean Pierre Polnareff",   "3,5",      "Grey,Black,Red", "Close", "Hero"],
+        ["Iggy",                    "3",        "Black,White,Yellow", "Close", "Hero"],
+        ["Holy Kujo",               "3",        "Pink,Tan,Yellow", "Close", "Hero"],
+        ["Enya the Hag",            "3",        "Brown,Silver,Yellow", "Long", "Villain"],
+        ["Vanilla Ice",             "3",        "Purple,Pink,Tan", "Close", "Villain"],
+        ["Hol Horse",               "3",        "Yellow, Green, Brown", "Long", "Villain"],
+        ["Oingo",                   "3",        "Blue,Red,Green", "N/A", "Villain"],
+        ["Boingo",                  "3",        "Green,Tan,Yellow", "N/A", "Villain"],
+        ["Telence T. D'Arby",       "3",        "Green,White,Purple", "Close", "Villain"],
+        ["Daniel J. D'Arby",        "3",        "Red,White,Pink", "Close", "Villain"],
+        ["Mannish Boy",             "3",        "Tan,Red,Blue", "Close", "Villain"],
+        ["Strength",                "3",        "Black,White,Brown", "Close", "Villain"],
 
-        ["Josuke Higashikata", "4", "Purple,Gold,Black", "Close"],
-        ["Koichi Hirose", "4,5", "Green,Grey,Gold", "Long"],
-        ["Okuyasu Nijimura", "4", "Blue,Green,Gold", "Close"],
-        ["Rohan Kishibe", "4", "Green,White,Pink", "Close"],
+        ["Josuke Higashikata",      "4",        "Purple,Gold,Black", "Close", "Hero"],
+        ["Koichi Hirose",           "4,5",      "Green,Grey,Gold", "Long", "Hero"],
+        ["Okuyasu Nijimura",        "4",        "Blue,Green,Gold", "Close", "Hero"],
+        ["Rohan Kishibe",           "4",        "Green,White,Pink", "Close", "Hero"],
 
-        ["Giorno Giovanna", "5", "Purple,Yellow,Blue", "Close"],
-        ["Bruno Bucciarati", "5", "White,Black,Gold", "Close"],
-        ["Leone Abbacchio", "5", "Black,Purple,Gold", "Close"],
-        ["Guido Mista", "5", "Orange,Blue,White", "Long"],
-        ["Narancia Ghirga", "5", "Purple,Orange,Black", "Long"],
-        ["Pannacotta Fugo", "5", "Green,Blue,Yellow", "Close"],
-        ["Trish Una", "5", "Pink,Black,Yellow", "Close"],
+        ["Giorno Giovanna",         "5",        "Purple,Yellow,Blue", "Close", "Hero"],
+        ["Bruno Bucciarati",        "5",        "White,Black,Gold", "Close", "Hero"],
+        ["Leone Abbacchio",         "5",        "Black,Purple,Gold", "Close", "Hero"],
+        ["Guido Mista",             "5",        "Orange,Blue,White", "Long", "Hero"],
+        ["Narancia Ghirga",         "5",        "Purple,Orange,Black", "Long", "Hero"],
+        ["Pannacotta Fugo",         "5",        "Green,Blue,Yellow", "Close", "Hero"],
+        ["Trish Una",               "5",        "Pink,Black,Yellow", "Close", "Hero"],
 
-        ["Jolyne Cujoh", "6", "Green,Orange,Yellow", "Close"],
-        ["Ermes Costello", "6", "Green,Brown,Orange", "Close"],
-        ["Emporio Alnino", "6", "White,Blue,Yellow", "N/A"],
-        ["Foo Fighters", "6", "Green,Blue,Yellow", "N/A"],
-        ["Weather Report", "6", "Blue,White,Yellow", "Close"],
-        ["Narciso Anastasia", "6", "Pink,Brown,White", "Close"],
-        ["Gwess", "6", "Purple,Green,Blue", "Long"],
-        ["Enrico Pucci", "6", "Black,White,Gold", "Long"],
-        ["Johngalli A.", "6", "Purple,White", "Long"],
-        ["The Green Baby", "6", "Green,Red", "Close"],
+        ["Jolyne Cujoh",            "6",        "Green,Orange,Yellow", "Close", "Hero"],
+        ["Ermes Costello",          "6",        "Green,Brown,Orange", "Close", "Hero"],
+        ["Emporio Alnino",          "6",        "White,Blue,Yellow", "N/A", "Hero"],
+        ["Foo Fighters",            "6",        "Green,Blue,Yellow", "N/A", "Hero"],
+        ["Weather Report",          "6",        "Blue,White,Yellow", "Close", "Hero"],
+        ["Narciso Anastasia",       "6",        "Pink,Brown,White", "Close", "Hero"],
+        ["Gwess",                   "6",        "Purple,Green,Blue", "Long", "N/A"],
+        ["Enrico Pucci",            "6",        "Black,White,Gold", "Long", "Villain"],
+        ["Johngalli A.",            "6",        "Purple,White", "Long", "Villain"],
+        ["The Green Baby",          "6",        "Green,Red", "Close", "N/A"],
 
-        ["Johnny Joestar", "7", "Blue,Yellow,Purple", "Long"],
-        ["Gyro Zeppeli", "7", "Purple,Green,Tan", "Long"],
-        ["Lucy Steel", "7", "Pink,Yellow", "N/A"],
-        ["Diego Brando", "7", "Blue,Yellow,Tan", "N/A"],
-        ["Hot Pants", "7", "Pink,Yellow,Grey", "N/A"],
-        ["Mountain Tim", "7", "Grey,Tan,Yellow", "N/A"],
-        ["Funny Valentine", "7", "Pink,Yellow,Purple", "Close"],
-        ["Pocoloco", "7", "Yellow,Brown,Orange", "Close"],
-        ["Jesus", "7", "Tan,Brown", "N/A"],
-        ["Wekapipo", "7", "Yellow,Orange,Blue", "N/A"],
-        ["Sandman", "7", "Green,Brown,Yellow", "Close"],
-        ["Pork Pie Hat Kid", "7", "Green,Yellow,Brown", "Long"],
-        ["Sugar Mountain", "7", "Pink,Black,Purple", "N/A"],
-        ["Magenta Magenta", "7", "Purple", "Close"]
+        ["Johnny Joestar",          "7",        "Blue,Yellow,Purple", "Long", "Hero"],
+        ["Gyro Zeppeli",            "7",        "Purple,Green,Tan", "Long", "Hero"],
+        ["Lucy Steel",              "7",        "Pink,Yellow", "N/A", "Hero"],
+        ["Diego Brando",            "7",        "Blue,Yellow,Tan", "N/A", "Villain"],
+        ["Hot Pants",               "7",        "Pink,Yellow,Grey", "N/A", "N/A"],
+        ["Mountain Tim",            "7",        "Grey,Tan,Yellow", "N/A", "Hero"],
+        ["Funny Valentine",         "7",        "Pink,Yellow,Purple", "Close"],
+        ["Pocoloco",                "7",        "Yellow,Brown,Orange", "Close", "N/A"],
+        ["Jesus",                   "7",        "Tan,Brown", "N/A", "N/A"],
+        ["Wekapipo",                "7",        "Yellow,Orange,Blue", "N/A", "Villain"],
+        ["Sandman",                 "7",        "Green,Brown,Yellow", "Close", "Villain"],
+        ["Pork Pie Hat Kid",        "7",        "Green,Yellow,Brown", "Long", "Villain"],
+        ["Sugar Mountain",          "7",        "Pink,Black,Purple", "N/A", "N/A"],
+        ["Magenta Magenta",         "7",        "Purple", "Close", "Villain"]
 
                 ]
     charObjects = None
@@ -144,7 +153,7 @@ class CharactersList:
         if self.charObjects == None:
             self.charObjects = []
             for char in self.charArray:
-                self.charObjects.append(Character(char[0],char[1],char[2],char[3]))
+                self.charObjects.append(Character(char[0],char[1],char[2],char[3],char[4]))
 
     def CharCount(self):
         return len(self.charObjects)
@@ -168,6 +177,7 @@ class Jojodle(commands.Cog, name="JoJodle"):
         results.append(char.CompareParts(self.curChar))
         results.append(char.CompareColors(self.curChar))
         results.append(char.CompareRange(self.curChar))
+        results.append(char.CompareAlly(self.curChar))
         return results
 
     @commands.command(
@@ -263,6 +273,7 @@ class Jojodle(commands.Cog, name="JoJodle"):
         embeds.append(discord.Embed(description=f"||Part(s): {charGuess.GetParts()}||", color=self.colors[results[1]]))
         embeds.append(discord.Embed(description=f"||Colors: {charGuess.GetColors()}||", color=self.colors[results[2]]))
         embeds.append(discord.Embed(description=f"||Stand range: {charGuess.GetRange()}||", color=self.colors[results[3]]))
+        embeds.append(discord.Embed(description=f"||Alliance: {charGuess.GetAlly()}||", color=self.colors[results[4]]))
         await i.response.send_message(embeds=embeds)
 
 
