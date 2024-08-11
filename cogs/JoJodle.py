@@ -62,22 +62,78 @@ class Character:
 class CharactersList:
     charArray = [
         #["name", "part(s)", "colors", "stand range"]
+        ["Jonathan Joestar", "1", "Blue,Brown,Grey", "N/A"],
+        ["Will Anthonio Zeppeli", "1", "Black,White,Red", "N/A"],
+        ["Robert E. O. Speedwagon", "1,2", "Purple,Green,Yellow", "N/A"],
+        ["Dio Brando", "1,3,6", "Yellow,Green,Black", "Close"],
+        ["Frog", "1", "Green,Black,White", "N/A"],
+        ["Straizo", "1,2", "Black,Purple,Red", "N/A"],
+
         ["Joseph Joestar", "2,3,4", "Brown,Green,Blue", "Close"],
+        ["Caesar Anthonio Zeppeli", "2", "White,Blue,Pink", "N/A"],
+        ["Lisa Lisa", "2", "Black,Red", "N/A"],
+        ["Rudol von Stroheim", "2", "Black,Green,Yellow", "N/A"],
+        ["Smokey Brown", "2", "Brown,Gray,Blue", "N/A"],
+        ["Suzi Q", "2,3", "Green,Yellow,White", "N/A"],
+        ["Kars", "2", "Purple,Pink", "N/A"],
+        ["Esidisi", "2", "Blue,Tan", "N/A"],
+        ["Wamuu", "2", "Tan,Yellow,Red", "N/A"],
+
         ["Jotaro Joestar", "3,4,6", "Black,Gold,Green", "Close"],
         ["Muhammad Avdol", "3", "Red,Gold,Tan", "Close"],
         ["Kakyoin Noriaki", "3", "Red,Green,Gold", "Long"],
         ["Jean Pierre Polnareff", "3,5", "Grey,Black,Red", "Close"],
+        ["Iggy", "3", "Black,White,Yellow", "Close"],
+        ["Holy Kujo", "3", "Pink,Tan,Yellow", "Close"],
+        ["Enya the Hag", "3", "Brown,Silver,Yellow", "Long"],
+        ["Vanilla Ice", "3", "Purple,Pink,Tan", "Close"],
+        ["Hol Horse", "3", "Yellow, Green, Brown", "Long"],
+        ["Oingo", "3", "Blue,Red,Green", "N/A"],
+        ["Boingo", "3", "Green,Tan,Yellow", "N/A"],
+        ["Telence T. D'Arby", "3", "Green,White,Purple", "Close"],
+        ["Daniel J. D'Arby", "3", "Red,White,Pink", "Close"],
+        ["Mannish Boy", "3", "Tan,Red,Blue", "Close"],
+        ["Strength", "3", "Black,White,Brown", "Close"],
+
         ["Josuke Higashikata", "4", "Purple,Gold,Black", "Close"],
         ["Koichi Hirose", "4,5", "Green,Grey,Gold", "Long"],
         ["Okuyasu Nijimura", "4", "Blue,Green,Gold", "Close"],
         ["Rohan Kishibe", "4", "Green,White,Pink", "Close"],
+
         ["Giorno Giovanna", "5", "Purple,Yellow,Blue", "Close"],
         ["Bruno Bucciarati", "5", "White,Black,Gold", "Close"],
         ["Leone Abbacchio", "5", "Black,Purple,Gold", "Close"],
         ["Guido Mista", "5", "Orange,Blue,White", "Long"],
         ["Narancia Ghirga", "5", "Purple,Orange,Black", "Long"],
         ["Pannacotta Fugo", "5", "Green,Blue,Yellow", "Close"],
-        ["Trish Una", "5", "Pink,Black,Yellow", "Close"]
+        ["Trish Una", "5", "Pink,Black,Yellow", "Close"],
+
+        ["Jolyne Cujoh", "6", "Green,Orange,Yellow", "Close"],
+        ["Ermes Costello", "6", "Green,Brown,Orange", "Close"],
+        ["Emporio Alnino", "6", "White,Blue,Yellow", "N/A"],
+        ["Foo Fighters", "6", "Green,Blue,Yellow", "N/A"],
+        ["Weather Report", "6", "Blue,White,Yellow", "Close"],
+        ["Narciso Anastasia", "6", "Pink,Brown,White", "Close"],
+        ["Gwess", "6", "Purple,Green,Blue", "Long"],
+        ["Enrico Pucci", "6", "Black,White,Gold", "Long"],
+        ["Johngalli A.", "6", "Purple,White", "Long"],
+        ["The Green Baby", "6", "Green,Red", "Close"],
+
+        ["Johnny Joestar", "7", "Blue,Yellow,Purple", "Long"],
+        ["Gyro Zeppeli", "7", "Purple,Green,Tan", "Long"],
+        ["Lucy Steel", "7", "Pink,Yellow", "N/A"],
+        ["Diego Brando", "7", "Blue,Yellow,Tan", "N/A"],
+        ["Hot Pants", "7", "Pink,Yellow,Grey", "N/A"],
+        ["Mountain Tim", "7", "Grey,Tan,Yellow", "N/A"],
+        ["Funny Valentine", "7", "Pink,Yellow,Purple", "Close"],
+        ["Pocoloco", "7", "Yellow,Brown,Orange", "Close"],
+        ["Jesus", "7", "Tan,Brown", "N/A"],
+        ["Wekapipo", "7", "Yellow,Orange,Blue", "N/A"],
+        ["Sandman", "7", "Green,Brown,Yellow", "Close"],
+        ["Pork Pie Hat Kid", "7", "Green,Yellow,Brown", "Long"],
+        ["Sugar Mountain", "7", "Pink,Black,Purple", "N/A"],
+        ["Magenta Magenta", "7", "Purple", "Close"]
+
                 ]
     charObjects = None
 
