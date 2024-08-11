@@ -216,5 +216,5 @@ class Owner(commands.Cog, name="owner"):
         await context.send(embed=embed)
 
 
-async def setup(bot) -> None:
-    await bot.add_cog(Owner(bot))
+'''async def setup(bot) -> None:
+    await bot.add_cog(Owner(bot))'''

@@ -324,5 +324,5 @@ class General(commands.Cog, name="general"):
         )
 
 
-async def setup(bot) -> None:
-    await bot.add_cog(General(bot))
+'''async def setup(bot) -> None:
+    await bot.add_cog(General(bot))'''

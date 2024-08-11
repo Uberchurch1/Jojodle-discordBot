@@ -159,5 +159,5 @@ class Fun(commands.Cog, name="fun"):
         await context.send("Please make your choice", view=view)
 
 
-async def setup(bot) -> None:
-    await bot.add_cog(Fun(bot))
+'''async def setup(bot) -> None:
+    await bot.add_cog(Fun(bot))'''
