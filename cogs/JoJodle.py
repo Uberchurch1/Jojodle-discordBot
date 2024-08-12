@@ -30,7 +30,7 @@ class Character:
         return self.colors
     def GetRange(self):
         return self.range
-    def Getally(self):
+    def GetAlly(self):
         return self.ally
 
     #compare functions return 0 if not the same, 1 if exactly the same, 2 if some are the same
@@ -70,52 +70,52 @@ class Character:
 
 class CharactersList:
     charArray = [
-        #["name", "part(s)", "colors", "stand range", "alliance"]
-        ["Jonathan Joestar",        "1",        "Blue,Brown,Grey", "N/A", "Hero"],
-        ["Will Anthonio Zeppeli",   "1",        "Black,White,Red", "N/A", "Hero"],
-        ["Robert E. O. Speedwagon", "1,2",      "Purple,Green,Yellow", "N/A", "Hero"],
-        ["Dio Brando",              "1,3,6",    "Yellow,Green,Black", "Close", "Villain"],
-        ["Frog",                    "1",        "Green,Black,White", "N/A", "N/A"],
-        ["Straizo",                 "1,2",      "Black,Purple,Red", "N/A", "N/A"],
+        #["name",                   "part(s)",  "colors",           "stand range", "alliance"]
+        ["Jonathan Joestar",        "1",        "Blue,Brown,Grey",      "N/A", "Hero"],
+        ["Will Anthonio Zeppeli",   "1",        "Black,White,Red",      "N/A", "Hero"],
+        ["Robert E. O. Speedwagon", "1,2",      "Purple,Green,Yellow",  "N/A", "Hero"],
+        ["Dio Brando",              "1,3,6",    "Yellow,Green,Black",   "Close", "Villain"],
+        ["Frog",                    "1",        "Green,Black,White",    "N/A", "N/A"],
+        ["Straizo",                 "1,2",      "Black,Purple,Red",     "N/A", "N/A"],
 
-        ["Joseph Joestar",          "2,3,4",    "Brown,Green,Blue", "Close", "Hero"],
-        ["Caesar Anthonio Zeppeli", "2",        "White,Blue,Pink", "N/A", "Hero"],
-        ["Lisa Lisa",               "2",        "Black,Red", "N/A", "Hero"],
-        ["Rudol von Stroheim",      "2",        "Black,Green,Yellow", "N/A", "Hero"],
-        ["Smokey Brown",            "2",        "Brown,Gray,Blue", "N/A", "Hero"],
-        ["Suzi Q",                  "2,3",      "Green,Yellow,White", "N/A", "Hero"],
-        ["Kars",                    "2",        "Purple,Pink", "N/A", "Villain"],
-        ["Esidisi",                 "2",        "Blue,Tan", "N/A", "Villain"],
-        ["Wamuu",                   "2",        "Tan,Yellow,Red", "N/A", "Villain"],
+        ["Joseph Joestar",          "2,3,4",    "Brown,Green,Blue",     "Close", "Hero"],
+        ["Caesar Anthonio Zeppeli", "2",        "White,Blue,Pink",      "N/A", "Hero"],
+        ["Lisa Lisa",               "2",        "Black,Red",            "N/A", "Hero"],
+        ["Rudol von Stroheim",      "2",        "Black,Green,Yellow",   "N/A", "Hero"],
+        ["Smokey Brown",            "2",        "Brown,Gray,Blue",      "N/A", "Hero"],
+        ["Suzi Q",                  "2,3",      "Green,Yellow,White",   "N/A", "Hero"],
+        ["Kars",                    "2",        "Purple,Pink",          "N/A", "Villain"],
+        ["Esidisi",                 "2",        "Blue,Tan",             "N/A", "Villain"],
+        ["Wamuu",                   "2",        "Tan,Yellow,Red",       "N/A", "Villain"],
 
-        ["Jotaro Joestar",          "3,4,6",    "Black,Gold,Green", "Close", "Hero"],
-        ["Muhammad Avdol",          "3",        "Red,Gold,Tan", "Close", "Hero"],
-        ["Kakyoin Noriaki",         "3",        "Red,Green,Gold", "Long", "Hero"],
-        ["Jean Pierre Polnareff",   "3,5",      "Grey,Black,Red", "Close", "Hero"],
-        ["Iggy",                    "3",        "Black,White,Yellow", "Close", "Hero"],
-        ["Holy Kujo",               "3",        "Pink,Tan,Yellow", "Close", "Hero"],
-        ["Enya the Hag",            "3",        "Brown,Silver,Yellow", "Long", "Villain"],
-        ["Vanilla Ice",             "3",        "Purple,Pink,Tan", "Close", "Villain"],
+        ["Jotaro Joestar",          "3,4,6",    "Black,Gold,Green",     "Close", "Hero"],
+        ["Muhammad Avdol",          "3",        "Red,Gold,Tan",         "Close", "Hero"],
+        ["Kakyoin Noriaki",         "3",        "Red,Green,Gold",       "Long", "Hero"],
+        ["Jean Pierre Polnareff",   "3,5",      "Grey,Black,Red",       "Close", "Hero"],
+        ["Iggy",                    "3",        "Black,White,Yellow",   "Close", "Hero"],
+        ["Holy Kujo",               "3",        "Pink,Tan,Yellow",      "Close", "Hero"],
+        ["Enya the Hag",            "3",        "Brown,Silver,Yellow",  "Long", "Villain"],
+        ["Vanilla Ice",             "3",        "Purple,Pink,Tan",      "Close", "Villain"],
         ["Hol Horse",               "3",        "Yellow, Green, Brown", "Long", "Villain"],
-        ["Oingo",                   "3",        "Blue,Red,Green", "N/A", "Villain"],
-        ["Boingo",                  "3",        "Green,Tan,Yellow", "N/A", "Villain"],
-        ["Telence T. D'Arby",       "3",        "Green,White,Purple", "Close", "Villain"],
-        ["Daniel J. D'Arby",        "3",        "Red,White,Pink", "Close", "Villain"],
-        ["Mannish Boy",             "3",        "Tan,Red,Blue", "Close", "Villain"],
-        ["Strength",                "3",        "Black,White,Brown", "Close", "Villain"],
+        ["Oingo",                   "3",        "Blue,Red,Green",       "N/A", "Villain"],
+        ["Boingo",                  "3",        "Green,Tan,Yellow",     "N/A", "Villain"],
+        ["Telence T. D'Arby",       "3",        "Green,White,Purple",   "Close", "Villain"],
+        ["Daniel J. D'Arby",        "3",        "Red,White,Pink",       "Close", "Villain"],
+        ["Mannish Boy",             "3",        "Tan,Red,Blue",         "Close", "Villain"],
+        ["Strength",                "3",        "Black,White,Brown",    "Close", "Villain"],
 
-        ["Josuke Higashikata",      "4",        "Purple,Gold,Black", "Close", "Hero"],
-        ["Koichi Hirose",           "4,5",      "Green,Grey,Gold", "Long", "Hero"],
-        ["Okuyasu Nijimura",        "4",        "Blue,Green,Gold", "Close", "Hero"],
-        ["Rohan Kishibe",           "4",        "Green,White,Pink", "Close", "Hero"],
+        ["Josuke Higashikata",      "4",        "Purple,Gold,Black",    "Close", "Hero"],
+        ["Koichi Hirose",           "4,5",      "Green,Grey,Gold",      "Long", "Hero"],
+        ["Okuyasu Nijimura",        "4",        "Blue,Green,Gold",      "Close", "Hero"],
+        ["Rohan Kishibe",           "4",        "Green,White,Pink",     "Close", "Hero"],
 
-        ["Giorno Giovanna",         "5",        "Purple,Yellow,Blue", "Close", "Hero"],
-        ["Bruno Bucciarati",        "5",        "White,Black,Gold", "Close", "Hero"],
-        ["Leone Abbacchio",         "5",        "Black,Purple,Gold", "Close", "Hero"],
-        ["Guido Mista",             "5",        "Orange,Blue,White", "Long", "Hero"],
-        ["Narancia Ghirga",         "5",        "Purple,Orange,Black", "Long", "Hero"],
-        ["Pannacotta Fugo",         "5",        "Green,Blue,Yellow", "Close", "Hero"],
-        ["Trish Una",               "5",        "Pink,Black,Yellow", "Close", "Hero"],
+        ["Giorno Giovanna",         "5",        "Purple,Yellow,Blue",   "Close", "Hero"],
+        ["Bruno Bucciarati",        "5",        "White,Black,Gold",     "Close", "Hero"],
+        ["Leone Abbacchio",         "5",        "Black,Purple,Gold",    "Close", "Hero"],
+        ["Guido Mista",             "5",        "Orange,Blue,White",    "Long", "Hero"],
+        ["Narancia Ghirga",         "5",        "Purple,Orange,Black",  "Long", "Hero"],
+        ["Pannacotta Fugo",         "5",        "Green,Blue,Yellow",    "Close", "Hero"],
+        ["Trish Una",               "5",        "Pink,Black,Yellow",    "Close", "Hero"],
 
         ["Jolyne Cujoh",            "6",        "Green,Orange,Yellow", "Close", "Hero"],
         ["Ermes Costello",          "6",        "Green,Brown,Orange", "Close", "Hero"],
@@ -134,7 +134,7 @@ class CharactersList:
         ["Diego Brando",            "7",        "Blue,Yellow,Tan", "N/A", "Villain"],
         ["Hot Pants",               "7",        "Pink,Yellow,Grey", "N/A", "N/A"],
         ["Mountain Tim",            "7",        "Grey,Tan,Yellow", "N/A", "Hero"],
-        ["Funny Valentine",         "7",        "Pink,Yellow,Purple", "Close"],
+        ["Funny Valentine",         "7",        "Pink,Yellow,Purple", "Close", "Villain"],
         ["Pocoloco",                "7",        "Yellow,Brown,Orange", "Close", "N/A"],
         ["Jesus",                   "7",        "Tan,Brown", "N/A", "N/A"],
         ["Wekapipo",                "7",        "Yellow,Orange,Blue", "N/A", "Villain"],
@@ -147,13 +147,17 @@ class CharactersList:
     charObjects = None
 
     def __init__(self):
+        print("init CharactersList")
         self.CheckObjects()
 
     def CheckObjects(self):
+        print("Checking Objects")
         if self.charObjects == None:
             self.charObjects = []
             for char in self.charArray:
                 self.charObjects.append(Character(char[0],char[1],char[2],char[3],char[4]))
+                #print(f"added char: {char[0]}")
+        print("finished Checking Objects")
 
     def CharCount(self):
         return len(self.charObjects)
@@ -164,21 +168,33 @@ class CharactersList:
 # Here we name the cog and create a new class for the cog.
 class Jojodle(commands.Cog, name="JoJodle"):
     def __init__(self, bot) -> None:
+        print("JoJodle init")
         self.bot = bot
         self.charList = CharactersList()
         self.colors = [0xf5462f,0x38eb7d,0xf5ee2f]
-        seed = datetime.datetime.now().strftime("%j%Y")
-        random.seed(seed)
-        self.curChar = self.charList.GetChar(random.randint(0, self.charList.CharCount() - 1))
+        self.SetDay()
 
-    def CompareGuess(self, char):
+
+    def CompareGuess(self, char1, char2):
         results = []
-        results.append(char.CompareName(self.curChar))
-        results.append(char.CompareParts(self.curChar))
-        results.append(char.CompareColors(self.curChar))
-        results.append(char.CompareRange(self.curChar))
-        results.append(char.CompareAlly(self.curChar))
+        results.append(char1.CompareName(char2))
+        results.append(char1.CompareParts(char2))
+        results.append(char1.CompareColors(char2))
+        results.append(char1.CompareRange(char2))
+        results.append(char1.CompareAlly(char2))
         return results
+
+    def SetSeed(self, seed):
+        self.seed = seed
+        random.seed(self.seed)
+        self.seedChar = self.charList.GetChar(random.randint(0, self.charList.CharCount() - 1))
+
+    def SetDay(self):
+        print("Setting Day")
+        self.day = datetime.datetime.now().strftime("%j%Y")
+        random.seed(self.day)
+        self.curChar = self.charList.GetChar(random.randint(0, self.charList.CharCount() - 1))
+        print("Finished Setting Day")
 
     @commands.command(
         name="sync",
@@ -242,6 +258,9 @@ class Jojodle(commands.Cog, name="JoJodle"):
         embed = discord.Embed(description=f"||Today's random integer is {curInt} with a seed of {seed}||")
         await context.send(embed=embed)
 
+#User Commands
+
+    #autocomplete choices for all guess commands
     async def guess_autocomplete(self,
                                interaction: discord.Interaction,
                                current: str,
@@ -254,19 +273,22 @@ class Jojodle(commands.Cog, name="JoJodle"):
             for choice in choices if current.lower() in choice.lower()
         ]
 
+    #standard daily guess command
     @app_commands.command(
         name="guess",
         description="make a guess for today's JoJodle"
     )
     @app_commands.autocomplete(choices=guess_autocomplete)
-    async def rps(self, i: discord.Interaction, choices: str):
+    async def guess(self, i: discord.Interaction, choices: str):
+        if datetime.datetime.now().strftime("%j%Y") != self.day:
+            self.SetDay()
         charGuess = None
         results = []
         choices = choices.lower()
         for char in self.charList.charObjects:
             if char.GetName().lower() == choices:
                 charGuess = char
-                results = self.CompareGuess(char)
+                results = self.CompareGuess(char, self.curChar)
         # rest of your command
         embeds = []
         embeds.append(discord.Embed(description=f"||You guessed {charGuess.GetName()}||", color=self.colors[results[0]]))
@@ -276,6 +298,30 @@ class Jojodle(commands.Cog, name="JoJodle"):
         embeds.append(discord.Embed(description=f"||Alliance: {charGuess.GetAlly()}||", color=self.colors[results[4]]))
         await i.response.send_message(embeds=embeds)
 
+    #seeded guess command
+    @app_commands.command(
+        name="seededguess",
+        description="make a guess for today's JoJodle"
+    )
+    @app_commands.autocomplete(choices=guess_autocomplete)
+    async def seededguess(self, i: discord.Interaction, choices: str, seed: str = None):
+        if seed != None:
+            self.SetSeed(seed)
+        charGuess = None
+        results = []
+        choices = choices.lower()
+        for char in self.charList.charObjects:
+            if char.GetName().lower() == choices:
+                charGuess = char
+                results = self.CompareGuess(char, self.seedChar)
+        # rest of your command
+        embeds = []
+        embeds.append(discord.Embed(description=f"||You guessed {charGuess.GetName()}||", color=self.colors[results[0]]))
+        embeds.append(discord.Embed(description=f"||Part(s): {charGuess.GetParts()}||", color=self.colors[results[1]]))
+        embeds.append(discord.Embed(description=f"||Colors: {charGuess.GetColors()}||", color=self.colors[results[2]]))
+        embeds.append(discord.Embed(description=f"||Stand range: {charGuess.GetRange()}||", color=self.colors[results[3]]))
+        embeds.append(discord.Embed(description=f"||Alliance: {charGuess.GetAlly()}||", color=self.colors[results[4]]))
+        await i.response.send_message(embeds=embeds)
 
 # And then we finally add the cog to the bot so that it can load, unload, reload and use it's content.
 async def setup(bot) -> None:
