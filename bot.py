@@ -18,6 +18,7 @@ import discord
 from discord.ext import commands, tasks
 from discord.ext.commands import Context
 from dotenv import load_dotenv
+from keep_alive import keep_alive
 
 from database import DatabaseManager
 
@@ -26,6 +27,8 @@ if not os.path.isfile(f"{os.path.realpath(os.path.dirname(__file__))}/config.jso
 else:
     with open(f"{os.path.realpath(os.path.dirname(__file__))}/config.json") as file:
         config = json.load(file)
+
+keep_alive()
 
 """	
 Setup bot intents (events restrictions)

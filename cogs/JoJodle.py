@@ -268,10 +268,16 @@ class Jojodle(commands.Cog, name="JoJodle"):
         choices = []
         for char in self.charList.charObjects:
             choices.append(char.GetName())
-        return [
+        if [
             app_commands.Choice(name=choice, value=choice)
             for choice in choices if current.lower() in choice.lower()
-        ]
+        ] <= 25:
+            return [
+                app_commands.Choice(name=choice, value=choice)
+                for choice in choices if current.lower() in choice.lower()
+            ]
+        else:
+            return []
 
     #standard daily guess command
     @app_commands.command(
