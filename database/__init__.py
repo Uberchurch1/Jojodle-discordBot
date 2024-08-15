@@ -99,7 +99,7 @@ class DatabaseManager:
 
     #add daily highscore time and/or count
     async def add_daily_hs(
-        self, user_id: int, server_id: int, time: int = None, count: int = None
+        self, user_id: int, server_id: int, time: float = None, count: int = None
     ) -> int:
         """
         This function will add a warn to the database.
@@ -108,36 +108,27 @@ class DatabaseManager:
         :param reason: The reason why the user should be warned.
         """
         rows = await self.connection.execute(
-            "SELECT id FROM dhs WHERE user_id=? AND server_id=? ORDER BY id DESC LIMIT 1",
+            "SELECT created_at FROM dhs WHERE user_id=? AND server_id=? ORDER BY created_at DESC LIMIT 1",
             (
                 user_id,
                 server_id,
             ),
         )
         async with rows as cursor:
-            if time is not None:
-                await self.connection.execute(
-                    "INSERT INTO dhs(user_id, server_id, time) VALUES (?, ?, ?)",
-                    (
-                        user_id,
-                        server_id,
-                        time
-                    ),
-                )
-            if count is not None:
-                await self.connection.execute(
-                    "INSERT INTO dhs(user_id, server_id, count) VALUES (?, ?, ?)",
-                    (
-                        user_id,
-                        server_id,
-                        count
-                    ),
-                )
+            await self.connection.execute(
+                "INSERT INTO dhs(user_id, server_id, time, count) VALUES (?, ?, ?, ?)",
+                (
+                    user_id,
+                    server_id,
+                    time,
+                    count
+                ),
+            )
             await self.connection.commit()
 
     #add seeded highscore time and/or count
     async def add_seeded_hs(
-        self, user_id: int, server_id: int, time: int = None, count: int = None
+        self, user_id: int, server_id: int, time: float = None, count: int = None
     ) -> int:
         """
         This function will add a warn to the database.
@@ -146,35 +137,26 @@ class DatabaseManager:
         :param reason: The reason why the user should be warned.
         """
         rows = await self.connection.execute(
-            "SELECT id FROM shs WHERE user_id=? AND server_id=? ORDER BY id DESC LIMIT 1",
+            "SELECT created_at FROM shs WHERE user_id=? AND server_id=? ORDER BY created_at DESC LIMIT 1",
             (
                 user_id,
                 server_id,
             ),
         )
         async with rows as cursor:
-            if time is not None:
-                await self.connection.execute(
-                    "INSERT INTO shs(user_id, server_id, time) VALUES (?, ?, ?)",
-                    (
-                        user_id,
-                        server_id,
-                        time
-                    ),
-                )
-            if count is not None:
-                await self.connection.execute(
-                    "INSERT INTO shs(user_id, server_id, count) VALUES (?, ?, ?)",
-                    (
-                        user_id,
-                        server_id,
-                        count
-                    ),
-                )
+            await self.connection.execute(
+                "INSERT INTO shs(user_id, server_id, time, count) VALUES (?, ?, ?, ?)",
+                (
+                    user_id,
+                    server_id,
+                    time,
+                    count
+                ),
+            )
             await self.connection.commit()
 
     #get highscores daily and/or seeded
-    async def get_highscores(self, user_id: int, server_id: int, type:int = 2, all:bool = False) -> list:
+    async def get_highscores(self, user_id: int, server_id: int, all:bool = False) -> list:
         """
         This function will get all the warnings of a user.
 
@@ -182,6 +164,17 @@ class DatabaseManager:
         :param server_id: The ID of the server that should be checked.
         :return: A list of all the warnings of the user.
         """
+        #set up return variables
+        fdtimeL = []
+        fdcountL = []
+        fstimeL = []
+        fscountL = []
+        dhtime = None
+        dhcount = None
+        shtime = None
+        shcount = None
+
+        #get daily (high)scores
         dhscores = await self.connection.execute(
             "SELECT user_id, server_id, time, count FROM dhs WHERE user_id=? AND server_id=?",
             (
@@ -192,19 +185,25 @@ class DatabaseManager:
         async with dhscores as cursor:
             dhresults = await cursor.fetchall()
             if all:
-                dhresult_list = []
-                for row in dhresults:
-                    dhresult_list.append(row)
-                #return result_list
-            else:
-                dhtime = None
-                dhcount = None
+                #get all scores
+                dhtime_list = []
+                dhcount_list = []
                 for time in dhresults['time'].values[0]:
-                    dhtime = time if (dhtime > time) or (dhtime == None) else dhtime
+                    dhtime_list.append(time)
                 for count in dhresults['count'].values[0]:
-                    dhcount = count if (dhcount > count) or (dhcount == None) else dhcount
-                #return [dhtime, dhcount]
-        #repeat with shs
+                    dhcount_list.append(count)
+                #append results
+                for result in dhtime_list:
+                    fdtimeL.append(result)
+                for result in dhcount_list:
+                    fdcountL.append(result)
+            #get high scores
+            for time in dhresults['time'].values[0]:
+                dhtime = time if (dhtime > time) or (dhtime == None) else dhtime
+            for count in dhresults['count'].values[0]:
+                dhcount = count if (dhcount > count) or (dhcount == None) else dhcount
+
+        #repeat with seeded (high)scores
         shscores = await self.connection.execute(
             "SELECT user_id, server_id, time, count FROM shs WHERE user_id=? AND server_id=?",
             (
@@ -215,30 +214,31 @@ class DatabaseManager:
         async with shscores as cursor:
             shresults = await cursor.fetchall()
             if all:
-                shresult_list = []
-                for row in dhresults:
-                    shresult_list.append(row)
-                #return result_list
-            else:
-                shtime = None
-                shcount = None
+                #get all scores
+                shtime_list = []
+                shcount_list = []
                 for time in shresults['time'].values[0]:
-                    shtime = time if (shtime > time) or (shtime == None) else shtime
+                    shtime_list.append(time)
                 for count in shresults['count'].values[0]:
-                    shcount = count if (shcount > count) or (shcount == None) else shcount
-                #return [dhtime, dhcount]
-        
-        final = []
-        if all:
-            if type == 0 or type == 2:
-                for i in dhresult_list:
-                    final.append(i)
-            if type == 1 or type == 2:
-                for i in shresult_list:
-                    final.append(i)
-        else:
-            if type == 0 or type == 2:
-                final.append(dhcount, dhtime)
-            if type == 1 or type == 2:
-                final.append(shcount, shtime)
-        return final
+                    shcount_list.append(count)
+                #append results
+                for result in shtime_list:
+                    fstimeL.append(result)
+                for result in shcount_list:
+                    fscountL.append(result)
+            #get high scores
+            for time in shresults['time'].values[0]:
+                shtime = time if (shtime > time) or (shtime == None) else shtime
+            for count in shresults['count'].values[0]:
+                shcount = count if (shcount > count) or (shcount == None) else shcount
+
+        #reorganizes all scores to be accessed better
+        fdaily = []
+        for i in range(len(fdtimeL)):
+            fdaily.append([fdtimeL[i], fdcountL[i]])
+        fseeded = []
+        for i in range(len(fstimeL)):
+            fseeded.append([fstimeL[i], fscountL[i]])
+        #       #all daily scores   #all seeded scores  #daily high score   #seeded high score
+        #       return[0][i][x]     return[1][i][x]     return[2][x]        return[3][x]
+        return [fdaily,             fseeded,            [dhtime, dhcount],  [shtime, shcount]]

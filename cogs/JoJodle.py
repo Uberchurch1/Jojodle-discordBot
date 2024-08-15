@@ -323,6 +323,79 @@ class Jojodle(commands.Cog, name="JoJodle"):
         embeds.append(discord.Embed(description=f"||Alliance: {charGuess.GetAlly()}||", color=self.colors[results[4]]))
         await i.response.send_message(embeds=embeds)
 
+#highscore commands
+    #manually add highscores
+    @app_commands.command(
+        name="addhs",
+        description="Shows the highscores of a user in the server.",
+    )
+    @commands.has_guild_permissions(manage_messages=True)
+    @app_commands.describe(user="The user you want to get the warnings of.")
+    @commands.is_owner()
+    async def addhs(self, i: discord.Interaction, user: discord.User, time:float, count:int, daily: bool = False) -> None:
+        member = i.guild.get_member(user.id) or await i.guild.fetch_member(
+            user.id
+        )
+        if daily:
+            await self.bot.database.add_daily_hs(user.id, i.guild.id, time, count)
+        else:
+            await self.bot.database.add_seeded_hs(user.id, i.guild.id, time, count)
+        type = "daily" if daily else "seeded"
+        embed = discord.Embed(description=f"added {member}'s {type} highscore( time: {time}, count: {count})")
+        await i.response.send_message(embed=embed)
+
+    #get highscores(XX-type 0 = daily, type 1 = seeded, type 2 = both-XX, all (show all scores))
+    @app_commands.command(
+        name="highscores",
+        description="Shows the highscores of a user in the server.",
+    )
+    @commands.has_guild_permissions(manage_messages=True)
+    @app_commands.describe(user="The user you want to get the warnings of.")
+    async def highscores(self, i: discord.Interaction, user: discord.User, all:bool = False) -> None:
+        """
+        Shows the warnings of a user in the server.
+
+        :param context: The hybrid command context.
+        :param user: The user you want to get the warnings of.
+        """
+        #       #all daily scores   #all seeded scores  #daily high score   #seeded high score
+        #       return[0][x][i]     return[1][x][i]     return[2][x]        return[3][x]
+        highscore_results = await self.bot.database.get_highscores(user.id, i.guild.id, all)
+        embed = discord.Embed(title=f"Highscores of {user}", color=0xe483ff)
+        '''description = ""
+        if highscore_results == -1:
+            description = "This user has no highscores."
+        else:
+            description += f"*|         Daily       Highscores         |* *|         Seeded      Highscores         |*\n"
+            description += "*| time: {dtime:<8}s - count: {dcount:<4}guesses |* *| time: {stime:<8}s - count: {scount:<4}guesses |*\n".format(
+                dtime = highscore_results[2][0],
+                dcount = highscore_results[2][1],
+                stime = highscore_results[3][0],
+                scount = highscore_results[3][1]
+            )
+            if all:
+                description += f"*|       All     Daily      scores        |* *|       All     Seeded      scores       |*\n"
+                rows = []
+                for daily in highscore_results[0]:
+                    rows.append("*| time: {dtime:<8}s - count: {dcount:<4}guesses |*".format(
+                        dtime = daily[0],
+                        dcount = daily[1]
+                    ))
+                for i in range(len(highscore_results[1])):
+                    try:
+                        rows[i] += " *| time: {stime:<8}s - count: {scount:<4}guesses |*\n".format(
+                            stime=highscore_results[1][i][0],
+                            scount=highscore_results[1][i][1]
+                        )
+                    except:
+                        rows.append("                                           *| time: {stime:<8}s - count: {scount:<4}guesses |*\n".format(
+                            stime=highscore_results[1][i][0],
+                            scount=highscore_results[1][i][1]
+                        ))'''
+        description = highscore_results
+        embed.description = description
+        await i.response.send_message(embed=embed)
+
 # And then we finally add the cog to the bot so that it can load, unload, reload and use it's content.
 async def setup(bot) -> None:
     await bot.add_cog(Jojodle(bot))
