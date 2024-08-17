@@ -125,6 +125,7 @@ class DatabaseManager:
                 ),
             )
             await self.connection.commit()
+        #TODO: check if is high score and add to sleaderboard
 
     #add seeded highscore time and/or count
     async def add_seeded_hs(
@@ -154,6 +155,44 @@ class DatabaseManager:
                 ),
             )
             await self.connection.commit()
+
+        #TODO: check if is high score and add to sleaderboard
+        rows = await self.connection.execute(
+            "SELECT created_at FROM sleaderboard WHERE user_id=? AND server_id=? ORDER BY created_at DESC LIMIT 1",
+            (
+                user_id,
+                server_id,
+            ),
+        )
+        async with rows as cursor:
+            #TODO: check rank
+            rank = -1
+            if await cursor.fetchone() == None:
+                await self.connection.execute(
+                    "INSERT INTO sleaderboard(user_id, server_id, time, count, rank) VALUES (?, ?, ?, ?, ?)",
+                    (
+                        user_id,
+                        server_id,
+                        time,
+                        count,
+                        #TODO: add rank
+                        rank
+                    ),
+                )
+            else:
+                await self.connection.execute(
+                    "UPDATE sleaderboard SET time = ?, count = ?, rank = ? WHERE user_id = ?",
+                    (
+                        time,
+                        count,
+                        rank,
+                        user_id
+                        # TODO: add rank
+                    ),
+                )
+            await self.connection.commit()
+
+    #TODO: MAKE CHECK RANK LEADERBOARD FUNCTION
 
     #get highscores daily and/or seeded
     async def get_highscores(self, user_id: int, server_id: int, all:bool = False) -> list:
@@ -188,6 +227,7 @@ class DatabaseManager:
                 #get all scores
                 dhtime_list = []
                 dhcount_list = []
+                #TODO: fix ['time'].values
                 for time in dhresults['time'].values[0]:
                     dhtime_list.append(time)
                 for count in dhresults['count'].values[0]:
@@ -197,7 +237,7 @@ class DatabaseManager:
                     fdtimeL.append(result)
                 for result in dhcount_list:
                     fdcountL.append(result)
-            #get high scores
+            #get high scores TODO: CHANGE TO LEADERBOARD DB
             for time in dhresults['time'].values[0]:
                 dhtime = time if (dhtime > time) or (dhtime == None) else dhtime
             for count in dhresults['count'].values[0]:
@@ -226,7 +266,7 @@ class DatabaseManager:
                     fstimeL.append(result)
                 for result in shcount_list:
                     fscountL.append(result)
-            #get high scores
+            #get high scores TODO: CHANGE TO LEADERBOARD DB
             for time in shresults['time'].values[0]:
                 shtime = time if (shtime > time) or (shtime == None) else shtime
             for count in shresults['count'].values[0]:
