@@ -14,88 +14,6 @@ import aiosqlite
 class DatabaseManager:
     def __init__(self, *, connection: aiosqlite.Connection) -> None:
         self.connection = connection
-
-    async def add_warn(
-        self, user_id: int, server_id: int, moderator_id: int, reason: str
-    ) -> int:
-        """
-        This function will add a warn to the database.
-
-        :param user_id: The ID of the user that should be warned.
-        :param reason: The reason why the user should be warned.
-        """
-        rows = await self.connection.execute(
-            "SELECT id FROM warns WHERE user_id=? AND server_id=? ORDER BY id DESC LIMIT 1",
-            (
-                user_id,
-                server_id,
-            ),
-        )
-        async with rows as cursor:
-            result = await cursor.fetchone()
-            warn_id = result[0] + 1 if result is not None else 1
-            await self.connection.execute(
-                "INSERT INTO warns(id, user_id, server_id, moderator_id, reason) VALUES (?, ?, ?, ?, ?)",
-                (
-                    warn_id,
-                    user_id,
-                    server_id,
-                    moderator_id,
-                    reason,
-                ),
-            )
-            await self.connection.commit()
-            return warn_id
-
-    async def remove_warn(self, warn_id: int, user_id: int, server_id: int) -> int:
-        """
-        This function will remove a warn from the database.
-
-        :param warn_id: The ID of the warn.
-        :param user_id: The ID of the user that was warned.
-        :param server_id: The ID of the server where the user has been warned
-        """
-        await self.connection.execute(
-            "DELETE FROM warns WHERE id=? AND user_id=? AND server_id=?",
-            (
-                warn_id,
-                user_id,
-                server_id,
-            ),
-        )
-        await self.connection.commit()
-        rows = await self.connection.execute(
-            "SELECT COUNT(*) FROM warns WHERE user_id=? AND server_id=?",
-            (
-                user_id,
-                server_id,
-            ),
-        )
-        async with rows as cursor:
-            result = await cursor.fetchone()
-            return result[0] if result is not None else 0
-
-    async def get_warnings(self, user_id: int, server_id: int) -> list:
-        """
-        This function will get all the warnings of a user.
-
-        :param user_id: The ID of the user that should be checked.
-        :param server_id: The ID of the server that should be checked.
-        :return: A list of all the warnings of the user.
-        """
-        rows = await self.connection.execute(
-            "SELECT user_id, server_id, moderator_id, reason, strftime('%s', created_at), id FROM warns WHERE user_id=? AND server_id=?",
-            (
-                user_id,
-                server_id,
-            ),
-        )
-        async with rows as cursor:
-            result = await cursor.fetchall()
-            result_list = []
-            for row in result:
-                result_list.append(row)
-            return result_list
         
 #JOJODLE DB COMMANDS
 
@@ -104,10 +22,10 @@ class DatabaseManager:
         self, user_id: int, server_id: int, time: float = None, count: int = None
     ) -> int:
         """
-        This function will add a warn to the database.
+        This function will add a score to the daily database.
 
         :param user_id: The ID of the user that should be warned.
-        :param reason: The reason why the user should be warned.
+        :param time: The time score.
         """
         #add score to all scores db
         rows = await self.connection.execute(
@@ -227,10 +145,10 @@ class DatabaseManager:
         self, user_id: int, server_id: int, time: float = None, count: int = None
     ) -> int:
         """
-        This function will add a warn to the database.
+        This function will add a score to the seeded database.
 
         :param user_id: The ID of the user that should be warned.
-        :param reason: The reason why the user should be warned.
+        :param time: The time score.
         """
         #add to personal all scores
         rows = await self.connection.execute(
@@ -349,11 +267,11 @@ class DatabaseManager:
     #get highscores daily and/or seeded
     async def get_scores(self, user_id: int, server_id: int, all:bool = False) -> list:
         """
-        This function will get all the warnings of a user.
+        This function will get all the scores of a user.
 
         :param user_id: The ID of the user that should be checked.
         :param server_id: The ID of the server that should be checked.
-        :return: A list of all the warnings of the user.
+        :return: A list of all the scores of the user.
         """
 
         # ----------------------------#
@@ -436,6 +354,59 @@ class DatabaseManager:
         #       [0]time, [1]count, [2]created_at        [0]time, [1]count, [2]created_at, [3]rank
         return [fdaily,             fseeded,            [dhtime, dhcount],  [shtime, shcount]]
 
+    async def leaderboard(self, server_id: int, number:int = 10) -> list:
+        # get daily leaderboard
+        # get time scores
+        dtime=[]
+        results = await self.connection.execute(
+            "SELECT rank, user_id, time, count, created_at FROM dleaderboard WHERE server_id=? AND type=0 ORDER BY rank",
+            (server_id,),
+        )
+        async with results as cursor:
+            results = await cursor.fetchall()
+            nrange = number if number < len(results) else len(results)
+            for i in range(nrange):
+                dtime.append(results[i])
+        # get count scores
+        dcount = []
+        results = await self.connection.execute(
+            "SELECT rank, user_id, time, count, created_at FROM dleaderboard WHERE server_id=? AND type=1 ORDER BY rank",
+            (server_id,),
+        )
+        async with results as cursor:
+            results = await cursor.fetchall()
+            nrange = number if number < len(results) else len(results)
+            for i in range(nrange):
+                dcount.append(results[i])
+
+        # get seeded leaderboard
+        # get time scores
+        stime = []
+        results = await self.connection.execute(
+            "SELECT rank, user_id, time, count, created_at FROM sleaderboard WHERE server_id=? AND type=0 ORDER BY rank",
+            (server_id,),
+        )
+        async with results as cursor:
+            results = await cursor.fetchall()
+            nrange = number if number < len(results) else len(results)
+            for i in range(nrange):
+                stime.append(results[i])
+        # get count scores
+        scount = []
+        results = await self.connection.execute(
+            "SELECT rank, user_id, time, count, created_at FROM sleaderboard WHERE server_id=? AND type=1 ORDER BY rank",
+            (server_id,),
+        )
+        async with results as cursor:
+            results = await cursor.fetchall()
+            nrange = number if number < len(results) else len(results)
+            for i in range(nrange):
+                scount.append(results[i])
+
+        #      daily leaderboard by time, by count, seeded leaderboard by time, by count
+        #      [0]rank, [1]user_id, [2]time, [3]count, [4]created_at
+        return [dtime, dcount, stime, scount]
+
     async def reset_comp(self, date: time.struct_time):
         await self.connection.execute(
             "UPDATE gtracker SET completed = 0.0, time = 0, count = 0, date=? WHERE type=0 AND date<>?",
@@ -493,10 +464,11 @@ class DatabaseManager:
     async def track_sguess(self, user_id: int, server_id: int, time: float, seed: str, correct: bool = False) -> [float, int]:
         completed = 0
         rows = await self.connection.execute(
-            "SELECT time, count, completed, seed FROM gtracker WHERE user_id=? AND server_id=? AND type=1",
+            "SELECT time, count, completed FROM gtracker WHERE user_id=? AND server_id=? AND type=1 AND seed=?",
             (
                 user_id,
                 server_id,
+                seed
             )
         )
         async with rows as cursor:
@@ -505,7 +477,7 @@ class DatabaseManager:
             if result == None:
                 print("inserting")
                 await self.connection.execute(
-                    "INSERT INTO gtracker (user_id, server_id, type, time, count, completed, seed) VALUES (?, ?, 0, ?, 1, 0,?)",
+                    "INSERT INTO gtracker (user_id, server_id, type, time, count, completed, seed, date) VALUES (?, ?, 1, ?, 1, 0,?,'none')",
                     (
                         user_id,
                         server_id,
@@ -513,37 +485,89 @@ class DatabaseManager:
                         seed
                     ),
                 )
-            elif result[3] == seed:
-                if result[2] == 0:
-                    print("update")
-                    completed = time - result[0]
-                    await self.connection.execute(
-                        "UPDATE gtracker SET time=?, count=?, completed=? WHERE user_id=? AND server_id=? AND type=1",
-                        (
-                            time if result[0] == 0 else result[0],
-                            result[1] + 1,
-                            completed if correct else 0,
-                            user_id,
-                            server_id,
-                        )
-                    )
-                else:
-                    return [result[2], result[1]]
-            else:
+            elif result[2] == 0:
                 print("update")
                 completed = time - result[0]
                 await self.connection.execute(
-                    "UPDATE gtracker SET time=?, count=1, completed=?, seed=? WHERE user_id=? AND server_id=? AND type=1",
+                    "UPDATE gtracker SET time=?, count=?, completed=? WHERE user_id=? AND server_id=? AND type=1",
                     (
-                        time,
+                        time if result[0] == 0 else result[0],
+                        result[1] + 1,
                         completed if correct else 0,
                         user_id,
                         server_id,
-                        seed
                     )
                 )
+            else:
+                return [result[2], result[1]]
             print('commit')
             await self.connection.commit()
             if correct:
-                await self.add_daily_hs(user_id, server_id, time=completed, count=result[1] + 1)
+                await self.add_seeded_hs(user_id, server_id, time=completed, count=result[1] + 1)
             return [completed, result[1]+1 if result != None else 1]
+
+    async def upd_ranks(self):
+        # update daily ranks
+        # upd time ranks
+        results = await self.connection.execute(
+            "SELECT user_id, server_id FROM dleaderboard WHERE type=0 ORDER BY time, count"
+        )
+        async with results as cursor:
+            results = await cursor.fetchall()
+            for i in range(len(results)):
+                await self.connection.execute(
+                    "UPDATE dleaderboard SET rank=? WHERE user_id=? AND server_id=? AND type=0",
+                    (
+                        i+1,
+                        results[i][0],
+                        results[i][1]
+                    )
+                )
+        # upd count ranks
+        results = await self.connection.execute(
+            "SELECT user_id, server_id FROM dleaderboard WHERE type=1 ORDER BY count, time"
+        )
+        async with results as cursor:
+            results = await cursor.fetchall()
+            for i in range(len(results)):
+                await self.connection.execute(
+                    "UPDATE dleaderboard SET rank=? WHERE user_id=? AND server_id=? AND type=1",
+                    (
+                        i+1,
+                        results[i][0],
+                        results[i][1]
+                    )
+                )
+
+        # update seeded ranks
+        # upd time ranks
+        results = await self.connection.execute(
+            "SELECT user_id, server_id FROM sleaderboard WHERE type=0 ORDER BY count, time"
+        )
+        async with results as cursor:
+            results = await cursor.fetchall()
+            for i in range(len(results)):
+                await self.connection.execute(
+                    "UPDATE sleaderboard SET rank=? WHERE user_id=? AND server_id=? AND type=0",
+                    (
+                        i+1,
+                        results[i][0],
+                        results[i][1]
+                    )
+                )
+        # upd count ranks
+        results = await self.connection.execute(
+            "SELECT user_id, server_id FROM sleaderboard WHERE type=1 ORDER BY time, count"
+        )
+        async with results as cursor:
+            results = await cursor.fetchall()
+            for i in range(len(results)):
+                await self.connection.execute(
+                    "UPDATE sleaderboard SET rank=? WHERE user_id=? AND server_id=? AND type=1",
+                    (
+                        i+1,
+                        results[i][0],
+                        results[i][1]
+                    )
+                )
+        await self.connection.commit()

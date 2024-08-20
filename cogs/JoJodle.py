@@ -77,9 +77,9 @@ class CharactersList:
         ["Dio Brando",              "1,3,6",    "Yellow,Green,Black",   "Close", "Villain"],
         ["Memetaa! Frog",           "1",        "Green,Black,White",    "N/A", "N/A"],
         ["Straizo",                 "1,2",      "Black,Purple,Red",     "N/A", "N/A"],
-        ["Danny ",                  "1",        "White, Black",         "N/A", "Hero"],
-        ["Doobie",                  "1",        "Black, Brown, Yellow", "N/A", "Villain"],
-        ["Tarkus & Bruford",        "1",        "White, Brown, Black",  "N/A", "Villain"],
+        ["Danny ",                  "1",        "White,Black",         "N/A", "Hero"],
+        ["Doobie",                  "1",        "Black,Brown,Yellow", "N/A", "Villain"],
+        ["Tarkus & Bruford",        "1",        "White,Brown,Black",  "N/A", "Villain"],
 
         ["Joseph Joestar",          "2,3,4",    "Brown,Green,Blue",     "Close", "Hero"],
         ["Caesar Anthonio Zeppeli", "2",        "White,Blue,Pink",      "N/A", "Hero"],
@@ -99,7 +99,7 @@ class CharactersList:
         ["Holy Kujo",               "3",        "Pink,Tan,Yellow",      "Close", "Hero"],
         ["Enya the Hag",            "3",        "Brown,Silver,Yellow",  "Long", "Villain"],
         ["Vanilla Ice",             "3",        "Purple,Pink,Tan",      "Close", "Villain"],
-        ["Hol Horse",               "3",        "Yellow, Green, Brown", "Long", "Villain"],
+        ["Hol Horse",               "3",        "Yellow,Green,Brown", "Long", "Villain"],
         ["Oingo",                   "3",        "Blue,Red,Green",       "N/A", "Villain"],
         ["Boingo",                  "3",        "Green,Tan,Yellow",     "Auto", "Villain"],
         ["Telence T. D'Arby",       "3",        "Green,White,Purple",   "Close", "Villain"],
@@ -114,22 +114,22 @@ class CharactersList:
         ["Reimi Sugimoto",          "4",        "Pink,Purple,Yellow",   "N/A",      "Hero"],
         ["Shigechi Yangu",          "4",        "Green,Yellow,Blue",    "Long",     "Hero"],
         ["Mikitaka Hazekura",       "4",        "Blue,Gold,White",      "N/A",      "Hero"],
-        ["Hayato Kawajiri",         "4",        "Green, Grey, Brown",   "N/A",      "Hero"],
-        ["Yuya Fungami",            "4",        "Black, White, Blue",   "Long",     "N/A"],
-        ["Yukako Yamagishi",        "4",        "Blue, Black, Purple",  "N/A",      "Villain"],
-        ["Toshikazu Hazamada",      "4",        "Blue, Black, Brown",   "Long",     "Villain"],
-        ["Tonio Trussardi",         "4",        "White, Red, Yellow",   "N/A",      "Hero"],
-        ["Aya Tsuji",               "4",        "Pink Purple Brown",    "Close",    "Hero"],
-        ["Shizuka Joestar",         "4",        "Pink, Purple, White",  "N/A",      "Hero"],
-        ["Yoshikage Kira",          "4",        "Purple, White, Green", "Close",    "Villain"],
-        ["Yoshihiro Kira",          "4",        "Red, White, Pink",     "N/A",      "Villain"],
-        ["Akira Otoishi",           "4",        "Purple, Orange, Gold", "Close",    "Villain"],
-        ["Angelo Katagiri",         "4",        "Blue, Pink, Grey",     "Long",     "Villain"],
-        ["Keicho Nijimura",         "4",        "Black, Yellow, Purple", "Close",   "Villain"],
-        ["Toyohiro Kanedaichi",     "4",        "Green, Orange, Purple", "Auto",     "Villain"],
-        ["Terunosuke Miyamoto",     "4",        "White, Black, Brown",  "Close",    "Villain"],
-        ["Bug-Eaten & Not Bug-Eaten", "4",      "Grey, Black",          "Long",     "Villain"],
-        ["Tomoko Higashikata",      "4",        "Red, Blue, Purple",    "N/A",      "Hero"],
+        ["Hayato Kawajiri",         "4",        "Green,Grey,Brown",   "N/A",      "Hero"],
+        ["Yuya Fungami",            "4",        "Black,White,Blue",   "Long",     "N/A"],
+        ["Yukako Yamagishi",        "4",        "Blue,Black,Purple",  "N/A",      "Villain"],
+        ["Toshikazu Hazamada",      "4",        "Blue,Black,Brown",   "Long",     "Villain"],
+        ["Tonio Trussardi",         "4",        "White,Red,Yellow",   "N/A",      "Hero"],
+        ["Aya Tsuji",               "4",        "Pink,Purple,Brown",    "Close",    "Hero"],
+        ["Shizuka Joestar",         "4",        "Pink,Purple,White",  "N/A",      "Hero"],
+        ["Yoshikage Kira",          "4",        "Purple,White,Green", "Close",    "Villain"],
+        ["Yoshihiro Kira",          "4",        "Red,White,Pink",     "N/A",      "Villain"],
+        ["Akira Otoishi",           "4",        "Purple,Orange,Gold", "Close",    "Villain"],
+        ["Angelo Katagiri",         "4",        "Blue,Pink,Grey",     "Long",     "Villain"],
+        ["Keicho Nijimura",         "4",        "Black,Yellow,Purple", "Close",   "Villain"],
+        ["Toyohiro Kanedaichi",     "4",        "Green,Orange,Purple", "Auto",     "Villain"],
+        ["Terunosuke Miyamoto",     "4",        "White,Black,Brown",  "Close",    "Villain"],
+        ["Bug-Eaten & Not Bug-Eaten", "4",      "Grey,Black",          "Long",     "Villain"],
+        ["Tomoko Higashikata",      "4",        "Red,Blue,Purple",    "N/A",      "Hero"],
 
         ["Giorno Giovanna",         "5",        "Purple,Yellow,Blue",   "Close", "Hero"],
         ["Bruno Bucciarati",        "5",        "White,Black,Gold",     "Close", "Hero"],
@@ -149,11 +149,11 @@ class CharactersList:
         ["Enrico Pucci",            "6",        "Black,White,Gold", "Long", "Villain"],
         ["Johngalli A.",            "6",        "Purple,White", "Long", "Villain"],
         ["The Green Baby",          "6",        "Green,Red", "Close", "Close"],
-        ["Guccio",                  "6",        "Blue, Black, White", "Auto", "Villain"],
-        ["Sports Maxx",             "6",        "Purple, Blue, Yellow", "Auto", "Villain"],
-        ["Thunder McQueen",         "6",        "Blue, Tan, Blond", "Long", "Villain"],
-        ["D an G",                  "6",        "Orange, Grey, Pink", "Auto", "Villain"],
-        ["Miuccia Miuller",         "6",        "Orange, Pink, Yellow", "Close", "Villain"],
+        ["Guccio",                  "6",        "Blue,Black,White", "Auto", "Villain"],
+        ["Sports Maxx",             "6",        "Purple,Blue,Yellow", "Auto", "Villain"],
+        ["Thunder McQueen",         "6",        "Blue,Tan,Blond", "Long", "Villain"],
+        ["D an G",                  "6",        "Orange,Grey,Pink", "Auto", "Villain"],
+        ["Miuccia Miuller",         "6",        "Orange,Pink,Yellow", "Close", "Villain"],
 
         ["Johnny Joestar",          "7",        "Blue,Yellow,Purple", "Long", "Hero"],
         ["Gyro Zeppeli",            "7",        "Purple,Green,Tan", "Long", "Hero"],
@@ -263,13 +263,14 @@ class Jojodle(commands.Cog, name="JoJodle"):
         await context.send(embed=embed)
     # Here you can just add your own commands, you'll always need to provide "self" as first parameter.
 
-    @commands.hybrid_command(
+    @commands.command(
         name="viewjo",
         description="sends today's current jo",
     )
+    @commands.is_owner()
     async def viewjo(self, context: Context) -> None:
         """
-        This is a testing command that does nothing.
+        This is a testing command that shows the current jo.
 
         :param context: The application command context.
         """
@@ -277,10 +278,11 @@ class Jojodle(commands.Cog, name="JoJodle"):
         embed = discord.Embed(description=f"||Today's JoJo's character is {self.curChar.GetName()} from part(s): {self.curChar.GetParts()} their main colors are {self.curChar.GetColors()}||")
         await context.send(embed=embed)
 
-    @commands.hybrid_command(
+    @commands.command(
         name="getrandint",
         description="sends today's random integer and the current seed",
     )
+    @commands.is_owner()
     async def getrandint(self, context: Context) -> None:
         seed = datetime.datetime.now().strftime("%j%Y")
         random.seed(seed)
@@ -309,7 +311,9 @@ class Jojodle(commands.Cog, name="JoJodle"):
         description="make a guess for today's JoJodle"
     )
     @app_commands.autocomplete(choices=guess_autocomplete)
+    @app_commands.describe(choices="The character you want to guess.")
     async def guess(self, i: discord.Interaction, choices: str):
+        userName = i.user.nick if i.user.nick != None else i.user.name
         if datetime.datetime.now().strftime("%j%Y") != self.day:
             self.SetDay()
         charGuess = None
@@ -325,8 +329,8 @@ class Jojodle(commands.Cog, name="JoJodle"):
         tresults = await self.bot.database.track_guess(user_id, server_id, datetime.datetime.now().timestamp(), self.day, (charGuess.GetName() == self.curChar.GetName()))
         # add results
         embeds = []
-        titleEmb = discord.Embed(title=f"{i.user.nick} Guessed", color=self.colors[3])
-        titleEmb.set_author(icon_url=i.user.avatar, name="Daily")
+        titleEmb = discord.Embed(title=f"{userName} Guessed", color=self.colors[3])
+        titleEmb.set_author(icon_url=i.user.avatar, name=f"Daily: {datetime.datetime.now().strftime('%x')}")
         titleEmb.set_footer(text=f"time: {tresults[0]}, count: {tresults[1]}")
         embeds.append(titleEmb)
         embeds.append(discord.Embed(description=f"||Character: {charGuess.GetName()}||", color=self.colors[results[0]]))
@@ -339,10 +343,13 @@ class Jojodle(commands.Cog, name="JoJodle"):
     #seeded guess command
     @app_commands.command(
         name="seededguess",
-        description="make a guess for today's JoJodle"
+        description="make a guess for the seeded JoJodle"
     )
     @app_commands.autocomplete(choices=guess_autocomplete)
+    @app_commands.describe(choices="The character you want to guess.")
+    @app_commands.describe(seed="What to set the seed as (leave blank for the previous seed).")
     async def seededguess(self, i: discord.Interaction, choices: str, seed: str = None):
+        userName = i.user.nick if i.user.nick != None else i.user.name
         if seed != None:
             self.SetSeed(seed)
         charGuess = None
@@ -355,11 +362,11 @@ class Jojodle(commands.Cog, name="JoJodle"):
         # track guess count and time
         user_id = i.user.id
         server_id = i.guild.id
-        tresults = await self.bot.database.track_sguess(user_id, server_id, datetime.datetime.now().timestamp(), self.seed, (charGuess.GetName() == self.curChar.GetName()))
+        tresults = await self.bot.database.track_sguess(user_id, server_id, datetime.datetime.now().timestamp(), self.seed, (charGuess.GetName() == self.seedChar.GetName()))
         # add results
         embeds = []
-        titleEmb = discord.Embed(title=f"{i.user.nick} Guessed", color=self.colors[3])
-        titleEmb.set_author(icon_url=i.user.avatar, name="Seeded")
+        titleEmb = discord.Embed(title=f"{userName} Guessed", color=self.colors[3])
+        titleEmb.set_author(icon_url=i.user.avatar, name=f"Seeded: {self.seed}")
         titleEmb.set_footer(text=f"time: {tresults[0]}, count: {tresults[1]}")
         embeds.append(titleEmb)
         embeds.append(discord.Embed(description=f"||You guessed {charGuess.GetName()}||", color=self.colors[results[0]]))
@@ -371,12 +378,12 @@ class Jojodle(commands.Cog, name="JoJodle"):
 
 #highscore commands
     #manually add highscores
-    @app_commands.command(
+    @commands.command(
         name="addhs",
         description="Shows the highscores of a user in the server.",
     )
     @commands.has_guild_permissions(manage_messages=True)
-    @app_commands.describe(user="The user you want to get the warnings of.")
+    @app_commands.describe(user="The user you want to add scores to.")
     @commands.is_owner()
     async def addhs(self, i: discord.Interaction, user: discord.User, time:float, count:int, daily: bool = False) -> None:
         member = i.guild.get_member(user.id) or await i.guild.fetch_member(
@@ -396,19 +403,17 @@ class Jojodle(commands.Cog, name="JoJodle"):
         description="Shows the highscores of a user in the server.",
     )
     @commands.has_guild_permissions(manage_messages=True)
-    @app_commands.describe(user="The user you want to get the warnings of.")
+    @app_commands.describe(user="The user you want to get the scores of.")
+    @app_commands.describe(all="If you want to show all their scores not just highscores.")
     async def getscores(self, interaction: discord.Interaction, user: discord.User, all:bool = False) -> None:
-        """
-        Shows the warnings of a user in the server.
-
-        :param context: The hybrid command context.
-        :param user: The user you want to get the warnings of.
-        """
+        await self.bot.database.upd_ranks()
         #       #all daily scores   #all seeded scores  #daily high score   #seeded high score
         #       return[0][i][x]     return[1][i][x]     return[2][t][x]        return[3][t][x]
         #       [0]time, [1]count, [2]created_at        [0]time, [1]count, [2]created_at, [3]rank
+        userName = user.display_name if user.display_name != None else user.name
         highscore_results = await self.bot.database.get_scores(user.id, interaction.guild.id, all)
-        embed = discord.Embed(title=f"Scores of {user}", color=self.colors[3])
+        embed = discord.Embed(title=f"Scores", color=self.colors[3])
+        embed.set_author(icon_url=user.avatar, name=userName)
         description = ""
         if highscore_results == -1:
             description = "This user has no highscores."
@@ -425,7 +430,7 @@ class Jojodle(commands.Cog, name="JoJodle"):
             if highscore_results[2][0] == None:
                 dailyTHS = "No Daily Time Highscore"
             else:
-                dailyTHS = "| time: **{time:-<8}s** - count: **{count:-<4}guesses** - rank: **{rank:-<4}** - date: *{date:<19}* |".format(
+                dailyTHS = "| time: **{time:-<8.2f}s** - count: **{count:-<4}guesses** - rank: **{rank:-<4}** - date: *{date:<19}* |".format(
                     time = highscore_results[2][0][0],
                     count = highscore_results[2][0][1],
                     rank = highscore_results[2][0][3],
@@ -434,7 +439,7 @@ class Jojodle(commands.Cog, name="JoJodle"):
             if highscore_results[2][1] == None:
                 dailyCHS = "No Daily Count Highscore"
             else:
-                dailyCHS = "| time: **{time:-<8}s** - count: **{count:-<4}guesses** - rank: **{rank:-<4}** - date: *{date:<19}* |".format(
+                dailyCHS = "| time: **{time:-<8.2f}s** - count: **{count:-<4}guesses** - rank: **{rank:-<4}** - date: *{date:<19}* |".format(
                     time=highscore_results[2][1][0],
                     count=highscore_results[2][1][1],
                     rank=highscore_results[2][1][3],
@@ -446,7 +451,7 @@ class Jojodle(commands.Cog, name="JoJodle"):
             if highscore_results[3][0] == None:
                 seededTHS = "No Seed Time Highscore"
             else:
-                seededTHS = "| time: **{time:-<8}s** - count: **{count:-<4}guesses** - rank: **{rank:-<4}** - date: *{date:<19}* |".format(
+                seededTHS = "| time: **{time:-<8.2f}s** - count: **{count:-<4}guesses** - rank: **{rank:-<4}** - date: *{date:<19}* |".format(
                     time=highscore_results[3][0][0],
                     count=highscore_results[3][0][1],
                     rank=highscore_results[3][0][3],
@@ -455,7 +460,7 @@ class Jojodle(commands.Cog, name="JoJodle"):
             if highscore_results[3][1] == None:
                 seededCHS = "No Seed Count Highscore"
             else:
-                seededCHS = "| time: **{time:-<8}s** - count: **{count:-<4}guesses** - rank: **{rank:-<4}** - date: *{date:<19}* |".format(
+                seededCHS = "| time: **{time:-<8.2f}s** - count: **{count:-<4}guesses** - rank: **{rank:-<4}** - date: *{date:<19}* |".format(
                     time=highscore_results[3][1][0],
                     count=highscore_results[3][1][1],
                     rank=highscore_results[3][1][3],
@@ -474,7 +479,7 @@ class Jojodle(commands.Cog, name="JoJodle"):
                     dslist.append("No Daily Scores")
                 else:
                     for daily in highscore_results[0]:
-                        score = "| time: **{time:-<8}s** - count: **{count:-<4}guesses** - date: *{date:<19}* |".format(
+                        score = "| time: **{time:-<8.2f}s** - count: **{count:-<4}guesses** - date: *{date:<19}* |".format(
                             time=daily[0],
                             count=daily[1],
                             date=daily[2]
@@ -496,7 +501,7 @@ class Jojodle(commands.Cog, name="JoJodle"):
                     sslist.append("No Seeded Scores")
                 else:
                     for seeded in highscore_results[1]:
-                        score = "| time: **{time:-<8}s** - count: **{count:-<4}guesses** - date: *{date:<19}* |".format(
+                        score = "| time: **{time:-<8.2f}s** - count: **{count:-<4}guesses** - date: *{date:<19}* |".format(
                             time=seeded[0],
                             count=seeded[1],
                             date=seeded[2]
@@ -539,6 +544,77 @@ class Jojodle(commands.Cog, name="JoJodle"):
                     description += row + "\n"
         embed.description = description'''#legacy printout
         await interaction.response.send_message(embed=embed)
+
+    @app_commands.command(
+        name="leaderboard",
+        description="Shows the leaderboard of users in this server.",
+    )
+    @commands.has_guild_permissions(manage_messages=True)
+    async def leaderboard(self, interaction: discord.Interaction) -> None:
+        #      daily leaderboard by time, by count, seeded leaderboard by time, by count
+        #      [0]rank, [1]user_id, [2]time, [3]count, [4]created_at
+        lbresults = await self.bot.database.leaderboard(interaction.guild.id, 10)
+        embeds = []
+        # daily leaderboard
+        daily = discord.Embed(title="Daily Leaderboard", color=self.colors[3])
+        # time scores
+        dtime = ""
+        for dtres in lbresults[0]:
+            user_ = await interaction.client.fetch_user(dtres[1])
+            name=user_.display_name
+            dtime += "**Rank:** {rank:-<6} - **User:** {user:-<20} | {time:-<6.2f}s - {count:-<3}guesses - *{date:<19}* |\n".format(
+                            rank="**"+str(dtres[0])+"**",
+                            user="**"+name+"**",
+                            time=dtres[2],
+                            count=dtres[3],
+                            date=dtres[4]
+                        )
+        daily.add_field(name="Sorted by Time", value=dtime, inline=False)
+        # count scores
+        dcount = ""
+        for dcres in lbresults[1]:
+            user_ = await interaction.client.fetch_user(dcres[1])
+            name = user_.display_name
+            dcount += "**Rank:** {rank:-<6} - **User:** {user:-<20} | {time:-<6.2f}s - {count:-<3}guesses - *{date:<19}* |\n".format(
+                rank="**" + str(dcres[0]) + "**",
+                user="**" + name + "**",
+                time=dcres[2],
+                count=dcres[3],
+                date=dcres[4]
+            )
+        daily.add_field(name="Sorted by Count", value=dcount, inline=False)
+        embeds.append(daily)
+
+        # seeded leaderboard
+        seeded = discord.Embed(title="Seeded Leaderboard", color=self.colors[3])
+        # time scores
+        stime = ""
+        for stres in lbresults[0]:
+            user_ = await interaction.client.fetch_user(stres[1])
+            name = user_.display_name
+            stime += "**Rank:** {rank:-<6} - **User:** {user:-<20} | {time:-<6.2f}s - {count:-<3}guesses - *{date:<19}* |\n".format(
+                rank="**" + str(stres[0]) + "**",
+                user="**" + name + "**",
+                time=stres[2],
+                count=stres[3],
+                date=stres[4]
+            )
+        seeded.add_field(name="Sorted by Time", value=stime, inline=False)
+        # count scores
+        scount = ""
+        for scres in lbresults[1]:
+            user_ = await interaction.client.fetch_user(scres[1])
+            name = user_.display_name
+            scount += "**Rank:** {rank:-<6} - **User:** {user:-<20} | {time:-<6.2f}s - {count:-<3}guesses - *{date:<19}* |\n".format(
+                rank="**" + str(scres[0]) + "**",
+                user="**" + name + "**",
+                time=scres[2],
+                count=scres[3],
+                date=scres[4]
+            )
+        seeded.add_field(name="Sorted by Count", value=scount, inline=False)
+        embeds.append(seeded)
+        await interaction.response.send_message(embeds=embeds)
 
 # And then we finally add the cog to the bot so that it can load, unload, reload and use it's content.
 async def setup(bot) -> None:
