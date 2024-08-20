@@ -325,8 +325,8 @@ class Jojodle(commands.Cog, name="JoJodle"):
         tresults = await self.bot.database.track_guess(user_id, server_id, datetime.datetime.now().timestamp(), self.day, (charGuess.GetName() == self.curChar.GetName()))
         # add results
         embeds = []
-        titleEmb = discord.Embed(title=f"{user_id} Guessed", color=self.colors[3])
-        titleEmb.set_author(name=i.user.name,icon_url=i.user.avatar)
+        titleEmb = discord.Embed(title=f"{i.user.nick} Guessed", color=self.colors[3])
+        titleEmb.set_author(icon_url=i.user.avatar, name="Daily")
         titleEmb.set_footer(text=f"time: {tresults[0]}, count: {tresults[1]}")
         embeds.append(titleEmb)
         embeds.append(discord.Embed(description=f"||Character: {charGuess.GetName()}||", color=self.colors[results[0]]))
@@ -352,8 +352,16 @@ class Jojodle(commands.Cog, name="JoJodle"):
             if char.GetName().lower() == choices:
                 charGuess = char
                 results = self.CompareGuess(char, self.seedChar)
-        # rest of your command
+        # track guess count and time
+        user_id = i.user.id
+        server_id = i.guild.id
+        tresults = await self.bot.database.track_sguess(user_id, server_id, datetime.datetime.now().timestamp(), self.seed, (charGuess.GetName() == self.curChar.GetName()))
+        # add results
         embeds = []
+        titleEmb = discord.Embed(title=f"{i.user.nick} Guessed", color=self.colors[3])
+        titleEmb.set_author(icon_url=i.user.avatar, name="Seeded")
+        titleEmb.set_footer(text=f"time: {tresults[0]}, count: {tresults[1]}")
+        embeds.append(titleEmb)
         embeds.append(discord.Embed(description=f"||You guessed {charGuess.GetName()}||", color=self.colors[results[0]]))
         embeds.append(discord.Embed(description=f"||Part(s): {charGuess.GetParts()}||", color=self.colors[results[1]]))
         embeds.append(discord.Embed(description=f"||Colors: {charGuess.GetColors()}||", color=self.colors[results[2]]))

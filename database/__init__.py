@@ -5,6 +5,7 @@ Description:
 
 Version: 6.2.0
 """
+import datetime
 import time
 
 import aiosqlite
@@ -483,6 +484,64 @@ class DatabaseManager:
                 )
             else:
                 return [result[2], result[1]]
+            print('commit')
+            await self.connection.commit()
+            if correct:
+                await self.add_daily_hs(user_id, server_id, time=completed, count=result[1] + 1)
+            return [completed, result[1]+1 if result != None else 1]
+
+    async def track_sguess(self, user_id: int, server_id: int, time: float, seed: str, correct: bool = False) -> [float, int]:
+        completed = 0
+        rows = await self.connection.execute(
+            "SELECT time, count, completed, seed FROM gtracker WHERE user_id=? AND server_id=? AND type=1",
+            (
+                user_id,
+                server_id,
+            )
+        )
+        async with rows as cursor:
+            result = await cursor.fetchone()
+            print(result)
+            if result == None:
+                print("inserting")
+                await self.connection.execute(
+                    "INSERT INTO gtracker (user_id, server_id, type, time, count, completed, seed) VALUES (?, ?, 0, ?, 1, 0,?)",
+                    (
+                        user_id,
+                        server_id,
+                        time,
+                        seed
+                    ),
+                )
+            elif result[3] == seed:
+                if result[2] == 0:
+                    print("update")
+                    completed = time - result[0]
+                    await self.connection.execute(
+                        "UPDATE gtracker SET time=?, count=?, completed=? WHERE user_id=? AND server_id=? AND type=1",
+                        (
+                            time if result[0] == 0 else result[0],
+                            result[1] + 1,
+                            completed if correct else 0,
+                            user_id,
+                            server_id,
+                        )
+                    )
+                else:
+                    return [result[2], result[1]]
+            else:
+                print("update")
+                completed = time - result[0]
+                await self.connection.execute(
+                    "UPDATE gtracker SET time=?, count=1, completed=?, seed=? WHERE user_id=? AND server_id=? AND type=1",
+                    (
+                        time,
+                        completed if correct else 0,
+                        user_id,
+                        server_id,
+                        seed
+                    )
+                )
             print('commit')
             await self.connection.commit()
             if correct:
