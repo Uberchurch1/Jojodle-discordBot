@@ -5,6 +5,7 @@ Description:
 
 Version: 6.2.0
 """
+import time
 
 import aiosqlite
 
@@ -97,7 +98,7 @@ class DatabaseManager:
         
 #JOJODLE DB COMMANDS
 
-    #add daily highscore time and/or count
+    #add daily highscore time and/or count TODO: copy seeded
     async def add_daily_hs(
         self, user_id: int, server_id: int, time: float = None, count: int = None
     ) -> int:
@@ -107,6 +108,7 @@ class DatabaseManager:
         :param user_id: The ID of the user that should be warned.
         :param reason: The reason why the user should be warned.
         """
+        #add score to all scores db
         rows = await self.connection.execute(
             "SELECT created_at FROM dhs WHERE user_id=? AND server_id=? ORDER BY created_at DESC LIMIT 1",
             (
@@ -125,6 +127,98 @@ class DatabaseManager:
                 ),
             )
             await self.connection.commit()
+
+        #adding to dleaderboard
+        rows = await self.connection.execute(
+            "SELECT created_at FROM dleaderboard WHERE user_id=? AND server_id=?",
+            (
+                user_id,
+                server_id,
+            ),
+        )
+        #checks if there is any highscore otherwise makes a new one
+        async with rows as cursor:
+            # TODO: check rank
+            rank = -1
+            if await cursor.fetchone() == None:
+                await self.connection.execute(
+                    "INSERT INTO dleaderboard(user_id, server_id, type, time, count, rank) VALUES (?, ?, 0, ?, ?, ?)",
+                    (
+                        user_id,
+                        server_id,
+                        time,
+                        count,
+                        # TODO: add rank
+                        rank
+                    ),
+                )
+                await self.connection.execute(
+                    "INSERT INTO dleaderboard(user_id, server_id, type, time, count, rank) VALUES (?, ?, 1, ?, ?, ?)",
+                    (
+                        user_id,
+                        server_id,
+                        time,
+                        count,
+                        # TODO: add rank
+                        rank
+                    ),
+                )
+                await self.connection.commit()
+                return 0
+        # find a greater(worse score) time
+        rows = await self.connection.execute(
+            "SELECT created_at FROM dleaderboard WHERE user_id=? AND server_id=? AND time >= ? AND type = 0",
+            (
+                user_id,
+                server_id,
+                time
+            ),
+        )
+        async with rows as cursor:
+            # TODO: check rank
+            rank = -1
+            if await cursor.fetchone() != None:
+                # update current high score
+                await cursor.execute(
+                    "UPDATE dleaderboard SET time = ?, count = ?, rank = ? WHERE user_id = ? AND server_id=? AND type=0",
+                    (
+                        time,
+                        count,
+                        rank,
+                        user_id,
+                        server_id
+                        # TODO: add rank
+                    ),
+                )
+
+        # find a greater(worse score) count
+        rows = await self.connection.execute(
+            "SELECT created_at FROM dleaderboard WHERE user_id=? AND server_id=? AND count >= ? AND type = 1",
+            (
+                user_id,
+                server_id,
+                count
+            ),
+        )
+        async with rows as cursor:
+            # TODO: check rank
+            rank = -1
+            if await cursor.fetchone() != None:
+                # update current high score
+                await cursor.execute(
+                    "UPDATE dleaderboard SET time = ?, count = ?, rank = ? WHERE user_id = ? AND server_id=? AND type=1",
+                    (
+                        time,
+                        count,
+                        rank,
+                        user_id,
+                        server_id
+                        # TODO: add rank
+                    ),
+                )
+
+        await self.connection.commit()
+        return 1
         #TODO: check if is high score and add to sleaderboard
 
     #add seeded highscore time and/or count
@@ -137,6 +231,7 @@ class DatabaseManager:
         :param user_id: The ID of the user that should be warned.
         :param reason: The reason why the user should be warned.
         """
+        #add to personal all scores
         rows = await self.connection.execute(
             "SELECT created_at FROM shs WHERE user_id=? AND server_id=? ORDER BY created_at DESC LIMIT 1",
             (
@@ -156,20 +251,21 @@ class DatabaseManager:
             )
             await self.connection.commit()
 
-        #TODO: check if is high score and add to sleaderboard
+        #check if is high score and add to sleaderboard
         rows = await self.connection.execute(
-            "SELECT created_at FROM sleaderboard WHERE user_id=? AND server_id=? ORDER BY created_at DESC LIMIT 1",
+            "SELECT created_at FROM sleaderboard WHERE user_id=? AND server_id=?",
             (
                 user_id,
                 server_id,
             ),
         )
+        # checks if there is any highscore otherwise makes a new one
         async with rows as cursor:
             #TODO: check rank
             rank = -1
             if await cursor.fetchone() == None:
                 await self.connection.execute(
-                    "INSERT INTO sleaderboard(user_id, server_id, time, count, rank) VALUES (?, ?, ?, ?, ?)",
+                    "INSERT INTO sleaderboard(user_id, server_id, type, time, count, rank) VALUES (?, ?, 0, ?, ?, ?)",
                     (
                         user_id,
                         server_id,
@@ -179,23 +275,78 @@ class DatabaseManager:
                         rank
                     ),
                 )
-            else:
                 await self.connection.execute(
-                    "UPDATE sleaderboard SET time = ?, count = ?, rank = ? WHERE user_id = ?",
+                    "INSERT INTO sleaderboard(user_id, server_id, type, time, count, rank) VALUES (?, ?, 1, ?, ?, ?)",
+                    (
+                        user_id,
+                        server_id,
+                        time,
+                        count,
+                        # TODO: add rank
+                        rank
+                    ),
+                )
+                await self.connection.commit()
+                return 0
+        #find a greater(worse score) time
+        rows = await self.connection.execute(
+            "SELECT created_at FROM sleaderboard WHERE user_id=? AND server_id=? AND time >= ? AND type = 0",
+            (
+                user_id,
+                server_id,
+                time
+            ),
+        )
+        async with rows as cursor:
+            # TODO: check rank
+            rank = -1
+            if await cursor.fetchone() != None:
+                #update current high score
+                await cursor.execute(
+                    "UPDATE sleaderboard SET time = ?, count = ?, rank = ? WHERE user_id = ? AND server_id=? AND type=0",
                     (
                         time,
                         count,
                         rank,
-                        user_id
+                        user_id,
+                        server_id
                         # TODO: add rank
                     ),
                 )
-            await self.connection.commit()
+
+        # find a greater(worse score) count
+        rows = await self.connection.execute(
+            "SELECT created_at FROM sleaderboard WHERE user_id=? AND server_id=? AND count >= ? AND type = 1",
+            (
+                user_id,
+                server_id,
+                count
+            ),
+        )
+        async with rows as cursor:
+            # TODO: check rank
+            rank = -1
+            if await cursor.fetchone() != None:
+                # update current high score
+                await cursor.execute(
+                    "UPDATE sleaderboard SET time = ?, count = ?, rank = ? WHERE user_id = ? AND server_id=? AND type=1",
+                    (
+                        time,
+                        count,
+                        rank,
+                        user_id,
+                        server_id
+                        # TODO: add rank
+                    ),
+                )
+
+        await self.connection.commit()
+        return 1
 
     #TODO: MAKE CHECK RANK LEADERBOARD FUNCTION
 
     #get highscores daily and/or seeded
-    async def get_highscores(self, user_id: int, server_id: int, all:bool = False) -> list:
+    async def get_scores(self, user_id: int, server_id: int, all:bool = False) -> list:
         """
         This function will get all the warnings of a user.
 
@@ -203,82 +354,137 @@ class DatabaseManager:
         :param server_id: The ID of the server that should be checked.
         :return: A list of all the warnings of the user.
         """
-        #set up return variables
-        fdtimeL = []
-        fdcountL = []
-        fstimeL = []
-        fscountL = []
-        dhtime = None
-        dhcount = None
-        shtime = None
-        shcount = None
+
+        # ----------------------------#
+        fdaily = []
+        fseeded = []
 
         #get daily (high)scores
-        dhscores = await self.connection.execute(
-            "SELECT user_id, server_id, time, count FROM dhs WHERE user_id=? AND server_id=?",
+        if all:
+            dhscores = await self.connection.execute(
+                "SELECT time, count, created_at FROM dhs WHERE user_id=? AND server_id=? ORDER BY created_at DESC",
+                (
+                    user_id,
+                    server_id,
+                ),
+            )
+            async with dhscores as cursor:
+                results = await cursor.fetchall()
+                if results == None:
+                    fdaily = None
+                else:
+                    for result in results:
+                        fdaily.append(result)
+        # ----------------------------#
+
+        #----------------------------#
+        rows = await self.connection.execute(
+            "SELECT time, count, created_at, rank FROM dleaderboard WHERE user_id=? AND server_id=? ORDER BY type",
             (
                 user_id,
                 server_id,
-            ),
+            )
         )
-        async with dhscores as cursor:
-            dhresults = await cursor.fetchall()
-            if all:
-                #get all scores
-                dhtime_list = []
-                dhcount_list = []
-                #TODO: fix ['time'].values
-                for time in dhresults['time'].values[0]:
-                    dhtime_list.append(time)
-                for count in dhresults['count'].values[0]:
-                    dhcount_list.append(count)
-                #append results
-                for result in dhtime_list:
-                    fdtimeL.append(result)
-                for result in dhcount_list:
-                    fdcountL.append(result)
-            #get high scores TODO: CHANGE TO LEADERBOARD DB
-            for time in dhresults['time'].values[0]:
-                dhtime = time if (dhtime > time) or (dhtime == None) else dhtime
-            for count in dhresults['count'].values[0]:
-                dhcount = count if (dhcount > count) or (dhcount == None) else dhcount
+        async with rows as cursor:
+            results = await cursor.fetchall()
+            try:
+                dhtime = results[0]
+                dhcount = results[1]
+            except:
+                dhtime = None
+                dhcount = None
+        # ----------------------------#
 
-        #repeat with seeded (high)scores
-        shscores = await self.connection.execute(
-            "SELECT user_id, server_id, time, count FROM shs WHERE user_id=? AND server_id=?",
+        # get seeded (high)scores
+        if all:
+            shscores = await self.connection.execute(
+                "SELECT time, count, created_at FROM shs WHERE user_id=? AND server_id=? ORDER BY created_at DESC",
+                (
+                    user_id,
+                    server_id,
+                ),
+            )
+            async with shscores as cursor:
+                results = await cursor.fetchall()
+                if results == None:
+                    fseeded = None
+                else:
+                    for result in results:
+                        fseeded.append(result)
+        # ----------------------------#
+        # ----------------------------#
+        rows = await self.connection.execute(
+            "SELECT time, count, created_at, rank FROM sleaderboard WHERE user_id=? AND server_id=? ORDER BY type",
             (
                 user_id,
                 server_id,
-            ),
+            )
         )
-        async with shscores as cursor:
-            shresults = await cursor.fetchall()
-            if all:
-                #get all scores
-                shtime_list = []
-                shcount_list = []
-                for time in shresults['time'].values[0]:
-                    shtime_list.append(time)
-                for count in shresults['count'].values[0]:
-                    shcount_list.append(count)
-                #append results
-                for result in shtime_list:
-                    fstimeL.append(result)
-                for result in shcount_list:
-                    fscountL.append(result)
-            #get high scores TODO: CHANGE TO LEADERBOARD DB
-            for time in shresults['time'].values[0]:
-                shtime = time if (shtime > time) or (shtime == None) else shtime
-            for count in shresults['count'].values[0]:
-                shcount = count if (shcount > count) or (shcount == None) else shcount
+        async with rows as cursor:
+            results = await cursor.fetchall()
+            try:
+                shtime = results[0]
+                shcount = results[1]
+            except:
+                shtime = None
+                shcount = None
+        # ----------------------------#
 
-        #reorganizes all scores to be accessed better
-        fdaily = []
-        for i in range(len(fdtimeL)):
-            fdaily.append([fdtimeL[i], fdcountL[i]])
-        fseeded = []
-        for i in range(len(fstimeL)):
-            fseeded.append([fstimeL[i], fscountL[i]])
         #       #all daily scores   #all seeded scores  #daily high score   #seeded high score
-        #       return[0][i][x]     return[1][i][x]     return[2][x]        return[3][x]
+        #       return[0][i][x]     return[1][i][x]     return[2][t][x]        return[3][t][x]
+        #       [0]time, [1]count, [2]created_at        [0]time, [1]count, [2]created_at, [3]rank
         return [fdaily,             fseeded,            [dhtime, dhcount],  [shtime, shcount]]
+
+    async def reset_comp(self, date: time.struct_time):
+        await self.connection.execute(
+            "UPDATE gtracker SET completed = 0.0, time = 0, count = 0, date=? WHERE type=0 AND date<>?",
+            (
+                date,
+                date
+            )
+        )
+        await self.connection.commit()
+
+    async def track_guess(self, user_id: int, server_id: int, time: time.struct_time, date: time.struct_time, correct: bool = False) -> [float, int]:
+        completed = 0
+        rows = await self.connection.execute(
+            "SELECT time, count, completed FROM gtracker WHERE user_id=? AND server_id=? AND type=0",
+            (
+                user_id,
+                server_id,
+            )
+        )
+        async with rows as cursor:
+            result = await cursor.fetchone()
+            print(result)
+            if result == None:
+                print("inserting")
+                await self.connection.execute(
+                    "INSERT INTO gtracker (user_id, server_id, type, time, count, completed, date) VALUES (?, ?, 0, ?, 1, 0,?)",
+                    (
+                        user_id,
+                        server_id,
+                        time,
+                        date
+                    ),
+                )
+            elif result[2] == 0:
+                print("update")
+                completed = time - result[0]
+                await self.connection.execute(
+                    "UPDATE gtracker SET time=?, count=?, completed=? WHERE user_id=? AND server_id=? AND type=0",
+                    (
+                        time if result[0] == 0 else result[0],
+                        result[1] + 1,
+                        completed if correct else 0,
+                        user_id,
+                        server_id,
+                    )
+                )
+            else:
+                return [result[2], result[1]]
+            print('commit')
+            await self.connection.commit()
+            if correct:
+                await self.add_daily_hs(user_id, server_id, time=completed, count=result[1] + 1)
+            return [completed, result[1]+1 if result != None else 1]
