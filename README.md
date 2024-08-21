@@ -1,7 +1,7 @@
 # JoJodle Discord Bot
 ![](https://github.com/Uberchurch1/Jojodle-discordBot/blob/main/images/jojodle-banner.png?raw=true)
 ### Description
-Jojodle is a [Wordle](https://www.nytimes.com/games/wordle/index.html "Wordle") like guessing game for JoJos Bizarre Adventure Characters. It is based off of games like [LoLdle](https://loldle.net "LoLdle") and the original [JoJodle](https://jojo-news.com/fun/jojodle/ "JoJodle") that was unfortunately shutdown on March 9th 2024. All those games are websites but I decided on a Discord bot instead. You can play the JoJodle on the [Official Server](https://discord.gg/AcvxDHcDmW "Official Server") or add it to your own server [here](https://discord.com/oauth2/authorize?client_id=1270479078411206766&permissions=2147544064&integration_type=0&scope=bot "here"). All this information is also available on the [GitHub page](https://github.com/Uberchurch1/Jojodle-discordBot/tree/main "GitHub page").
+Jojodle is a [Wordle](https://www.nytimes.com/games/wordle/index.html "Wordle") like guessing game for JoJos Bizarre Adventure Characters. It is based off of games like [LoLdle](https://loldle.net "LoLdle") and the original [JoJodle](https://jojo-news.com/fun/jojodle/ "JoJodle") that was unfortunately shutdown on March 9th 2024. All those games are websites but I decided on a Discord bot instead. You can play the JoJodle on the [Official Server](https://discord.gg/GMZGyRHC73 "Official Server") or add it to your own server [here](https://discord.com/oauth2/authorize?client_id=1270479078411206766&permissions=2147544064&integration_type=0&scope=bot "here"). All this information is also available on the [GitHub page](https://github.com/Uberchurch1/Jojodle-discordBot/tree/main "GitHub page").
 
 ------------
 
