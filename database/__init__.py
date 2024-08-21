@@ -506,11 +506,14 @@ class DatabaseManager:
                 await self.add_seeded_hs(user_id, server_id, time=completed, count=result[1] + 1)
             return [completed, result[1]+1 if result != None else 1]
 
-    async def upd_ranks(self):
+    async def upd_ranks(self, server_id:int):
         # update daily ranks
         # upd time ranks
         results = await self.connection.execute(
-            "SELECT user_id, server_id FROM dleaderboard WHERE type=0 ORDER BY time, count"
+            "SELECT user_id, server_id FROM dleaderboard WHERE type=0 AND server_id=? ORDER BY time, count",
+            (
+                server_id,
+            )
         )
         async with results as cursor:
             results = await cursor.fetchall()
@@ -520,12 +523,12 @@ class DatabaseManager:
                     (
                         i+1,
                         results[i][0],
-                        results[i][1]
+                        server_id
                     )
                 )
         # upd count ranks
         results = await self.connection.execute(
-            "SELECT user_id, server_id FROM dleaderboard WHERE type=1 ORDER BY count, time"
+            "SELECT user_id, server_id FROM dleaderboard WHERE type=1 AND server_id=? ORDER BY count, time"
         )
         async with results as cursor:
             results = await cursor.fetchall()
@@ -535,14 +538,14 @@ class DatabaseManager:
                     (
                         i+1,
                         results[i][0],
-                        results[i][1]
+                        server_id
                     )
                 )
 
         # update seeded ranks
         # upd time ranks
         results = await self.connection.execute(
-            "SELECT user_id, server_id FROM sleaderboard WHERE type=0 ORDER BY count, time"
+            "SELECT user_id, server_id FROM sleaderboard WHERE type=0 AND server_id=? ORDER BY count, time"
         )
         async with results as cursor:
             results = await cursor.fetchall()
@@ -552,12 +555,12 @@ class DatabaseManager:
                     (
                         i+1,
                         results[i][0],
-                        results[i][1]
+                        server_id
                     )
                 )
         # upd count ranks
         results = await self.connection.execute(
-            "SELECT user_id, server_id FROM sleaderboard WHERE type=1 ORDER BY time, count"
+            "SELECT user_id, server_id FROM sleaderboard WHERE type=1 AND server_id=? ORDER BY time, count"
         )
         async with results as cursor:
             results = await cursor.fetchall()
@@ -567,7 +570,7 @@ class DatabaseManager:
                     (
                         i+1,
                         results[i][0],
-                        results[i][1]
+                        server_id
                     )
                 )
         await self.connection.commit()
