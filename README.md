@@ -14,6 +14,7 @@ Jojodle is a [Wordle](https://www.nytimes.com/games/wordle/index.html "Wordle") 
 - Discord slash commands
 ##### wip
 - Server wide custom character list/spoiler list
+- Global leaderboard
 
 ### Commands
 - /guess choices:
