@@ -33,7 +33,7 @@ Jojodle is a [Wordle](https://www.nytimes.com/games/wordle/index.html "Wordle") 
 #### Credits
 <img src="https://github.com/Uberchurch1/Jojodle-discordBot/blob/main/images/jojodle-icon.png?raw=true" width="100" height="100" align="right"/>
 
-> Discord.py bot template by [Kkrypt0nn](https://github.com/kkrypt0nn/Python-Discord-Bot-Template "Kkrypt0nn") 
-> Modified JoJolion logo by [ByBiskuvi](https://www.reddit.com/r/StardustCrusaders/comments/u3fnqu/i_made_a_unoffical_jojolion_logo/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button "ByBiskuvi")
-> JoJos character information from [JoJoWiki(JoJos Bizarre Encyclopedia)](https://jojowiki.com "JoJoWiki(JoJos Bizarre Encyclopedia)")
-> Help and testing Harry Hobler, Eisen Brower, Kevin Malone
+> - Discord.py bot template by [Kkrypt0nn](https://github.com/kkrypt0nn/Python-Discord-Bot-Template "Kkrypt0nn")
+> - Modified JoJolion logo by [ByBiskuvi](https://www.reddit.com/r/StardustCrusaders/comments/u3fnqu/i_made_a_unoffical_jojolion_logo/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button "ByBiskuvi")
+> - JoJos character information from [JoJoWiki(JoJos Bizarre Encyclopedia)](https://jojowiki.com "JoJoWiki(JoJos Bizarre Encyclopedia)")
+> - Help and testing Harry Hobler, Eisen Brower, Kevin Malone
