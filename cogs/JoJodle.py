@@ -406,7 +406,7 @@ class Jojodle(commands.Cog, name="JoJodle"):
     @app_commands.describe(user="The user you want to get the scores of.")
     @app_commands.describe(all="If you want to show all their scores not just highscores.")
     async def getscores(self, interaction: discord.Interaction, user: discord.User, all:bool = False) -> None:
-        await self.bot.database.upd_ranks()
+        await self.bot.database.upd_ranks(interaction.guild.id)
         #       #all daily scores   #all seeded scores  #daily high score   #seeded high score
         #       return[0][i][x]     return[1][i][x]     return[2][t][x]        return[3][t][x]
         #       [0]time, [1]count, [2]created_at        [0]time, [1]count, [2]created_at, [3]rank
@@ -551,6 +551,7 @@ class Jojodle(commands.Cog, name="JoJodle"):
     )
     @commands.has_guild_permissions(manage_messages=True)
     async def leaderboard(self, interaction: discord.Interaction) -> None:
+        await self.bot.database.upd_ranks(interaction.guild.id)
         #      daily leaderboard by time, by count, seeded leaderboard by time, by count
         #      [0]rank, [1]user_id, [2]time, [3]count, [4]created_at
         lbresults = await self.bot.database.leaderboard(interaction.guild.id, 10)

@@ -528,7 +528,10 @@ class DatabaseManager:
                 )
         # upd count ranks
         results = await self.connection.execute(
-            "SELECT user_id, server_id FROM dleaderboard WHERE type=1 AND server_id=? ORDER BY count, time"
+            "SELECT user_id, server_id FROM dleaderboard WHERE type=1 AND server_id=? ORDER BY count, time",
+            (
+                server_id,
+            )
         )
         async with results as cursor:
             results = await cursor.fetchall()
@@ -545,7 +548,10 @@ class DatabaseManager:
         # update seeded ranks
         # upd time ranks
         results = await self.connection.execute(
-            "SELECT user_id, server_id FROM sleaderboard WHERE type=0 AND server_id=? ORDER BY count, time"
+            "SELECT user_id, server_id FROM sleaderboard WHERE type=0 AND server_id=? ORDER BY count, time",
+            (
+                server_id,
+            )
         )
         async with results as cursor:
             results = await cursor.fetchall()
@@ -560,7 +566,10 @@ class DatabaseManager:
                 )
         # upd count ranks
         results = await self.connection.execute(
-            "SELECT user_id, server_id FROM sleaderboard WHERE type=1 AND server_id=? ORDER BY time, count"
+            "SELECT user_id, server_id FROM sleaderboard WHERE type=1 AND server_id=? ORDER BY time, count",
+            (
+                server_id,
+            )
         )
         async with results as cursor:
             results = await cursor.fetchall()

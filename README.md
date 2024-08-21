@@ -11,8 +11,10 @@ Jojodle is a [Wordle](https://www.nytimes.com/games/wordle/index.html "Wordle") 
 - Daily wordle like guessing game
 - Infinite custom seeded guessing game
 - Automatic scores and leaderboard
+- Characters from parts 1 through 7
 - Discord slash commands
 ##### wip
+- Part 8 characters
 - Server wide custom character list/spoiler list
 - Global leaderboard
 
