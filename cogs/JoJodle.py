@@ -218,6 +218,7 @@ class Jojodle(commands.Cog, name="JoJodle"):
 
     def SetDay(self):
         print("Setting Day")
+        self.ResetComp()
         self.day = datetime.datetime.now().strftime("%j%Y")
         random.seed(self.day)
         self.curChar = self.charList.GetChar(random.randint(0, self.charList.CharCount() - 1))

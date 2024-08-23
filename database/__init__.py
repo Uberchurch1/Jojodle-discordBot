@@ -419,6 +419,7 @@ class DatabaseManager:
 
     async def track_guess(self, user_id: int, server_id: int, time: time.struct_time, date: time.struct_time, correct: bool = False) -> [float, int]:
         completed = 0
+        await self.reset_comp(date)
         rows = await self.connection.execute(
             "SELECT time, count, completed FROM gtracker WHERE user_id=? AND server_id=? AND type=0",
             (
