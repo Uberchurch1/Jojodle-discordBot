@@ -20,6 +20,7 @@ Jojodle is a [Wordle](https://www.nytimes.com/games/wordle/index.html "Wordle") 
 - Daily leaderboard (points)
 - Monthly leaderboard/reset
 - Average
+- React messages
 
 ### Commands
 - /guess choices:
