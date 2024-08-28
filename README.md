@@ -17,6 +17,9 @@ Jojodle is a [Wordle](https://www.nytimes.com/games/wordle/index.html "Wordle") 
 - Part 8 characters
 - Server wide custom character list/spoiler list
 - Global leaderboard
+- Daily leaderboard (points)
+- Monthly leaderboard/reset
+- Average
 
 ### Commands
 - /guess choices:
