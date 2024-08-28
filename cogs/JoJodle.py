@@ -199,8 +199,8 @@ class Jojodle(commands.Cog, name="JoJodle"):
         self.bot = bot
         self.charList = CharactersList()
         self.colors = [0xf5462f,0x38eb7d,0xf5ee2f,0xe483ff]
+        self.cemoji = ':tada:'
         self.SetDay()
-
 
     def CompareGuess(self, char1, char2):
         results = []
@@ -339,7 +339,9 @@ class Jojodle(commands.Cog, name="JoJodle"):
         embeds.append(discord.Embed(description=f"||Colors: {charGuess.GetColors()}||", color=self.colors[results[2]]))
         embeds.append(discord.Embed(description=f"||Stand range: {charGuess.GetRange()}||", color=self.colors[results[3]]))
         embeds.append(discord.Embed(description=f"||Alliance: {charGuess.GetAlly()}||", color=self.colors[results[4]]))
-        await i.response.send_message(embeds=embeds)
+        message = await i.response.send_message(embeds=embeds)
+        message.add_reaction(self.cemoji)
+
 
     #seeded guess command
     @app_commands.command(
@@ -375,7 +377,8 @@ class Jojodle(commands.Cog, name="JoJodle"):
         embeds.append(discord.Embed(description=f"||Colors: {charGuess.GetColors()}||", color=self.colors[results[2]]))
         embeds.append(discord.Embed(description=f"||Stand range: {charGuess.GetRange()}||", color=self.colors[results[3]]))
         embeds.append(discord.Embed(description=f"||Alliance: {charGuess.GetAlly()}||", color=self.colors[results[4]]))
-        await i.response.send_message(embeds=embeds)
+        message = await i.response.send_message(embeds=embeds)
+        message.add_reaction(self.cemoji)
 
 #highscore commands
     #manually add highscores
