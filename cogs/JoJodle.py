@@ -332,7 +332,7 @@ class Jojodle(commands.Cog, name="JoJodle"):
         embeds = []
         titleEmb = discord.Embed(title=f"{userName} Guessed", color=self.colors[3])
         titleEmb.set_author(icon_url=i.user.avatar, name=f"Daily: {datetime.datetime.now().strftime('%x')}")
-        titleEmb.set_footer(text=f"time: {tresults[0]}, count: {tresults[1]}")
+        titleEmb.set_footer(text=f"time: {tresults[0]:.2f}s, count: {tresults[1]}")
         embeds.append(titleEmb)
         embeds.append(discord.Embed(description=f"||Character: {charGuess.GetName()}||", color=self.colors[results[0]]))
         embeds.append(discord.Embed(description=f"||Part(s): {charGuess.GetParts()}||", color=self.colors[results[1]]))
@@ -370,7 +370,7 @@ class Jojodle(commands.Cog, name="JoJodle"):
         embeds = []
         titleEmb = discord.Embed(title=f"{userName} Guessed", color=self.colors[3])
         titleEmb.set_author(icon_url=i.user.avatar, name=f"Seeded: {self.seed}")
-        titleEmb.set_footer(text=f"time: {tresults[0]}, count: {tresults[1]}")
+        titleEmb.set_footer(text=f"time: {tresults[0]:.2f}s, count: {tresults[1]}")
         embeds.append(titleEmb)
         embeds.append(discord.Embed(description=f"||You guessed {charGuess.GetName()}||", color=self.colors[results[0]]))
         embeds.append(discord.Embed(description=f"||Part(s): {charGuess.GetParts()}||", color=self.colors[results[1]]))
