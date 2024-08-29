@@ -7,7 +7,7 @@ Version: 6.2.0
 """
 import datetime
 import time
-
+from itertools import count
 import aiosqlite
 
 
@@ -429,9 +429,9 @@ class DatabaseManager:
         )
         async with rows as cursor:
             result = await cursor.fetchone()
-            print(result)
+
             if result == None:
-                print("inserting")
+
                 await self.connection.execute(
                     "INSERT INTO gtracker (user_id, server_id, type, time, count, completed, date) VALUES (?, ?, 0, ?, 1, 0,?)",
                     (
@@ -442,8 +442,8 @@ class DatabaseManager:
                     ),
                 )
             elif result[2] == 0:
-                print("update")
-                completed = time - result[0]
+
+                completed = time - result[0] if result != None else 0
                 await self.connection.execute(
                     "UPDATE gtracker SET time=?, count=?, completed=? WHERE user_id=? AND server_id=? AND type=0",
                     (
@@ -456,10 +456,11 @@ class DatabaseManager:
                 )
             else:
                 return [result[2], result[1]]
-            print('commit')
+
             await self.connection.commit()
             if correct:
                 await self.add_daily_hs(user_id, server_id, time=completed, count=result[1] + 1)
+                await self.addtodaily(user_id,server_id,time=completed,count=result[1] + 1)
             return [completed, result[1]+1 if result != None else 1]
 
     async def track_sguess(self, user_id: int, server_id: int, time: float, seed: str, correct: bool = False) -> [float, int]:
@@ -474,9 +475,9 @@ class DatabaseManager:
         )
         async with rows as cursor:
             result = await cursor.fetchone()
-            print(result)
+
             if result == None:
-                print("inserting")
+
                 await self.connection.execute(
                     "INSERT INTO gtracker (user_id, server_id, type, time, count, completed, seed, date) VALUES (?, ?, 1, ?, 1, 0,?,'none')",
                     (
@@ -487,7 +488,7 @@ class DatabaseManager:
                     ),
                 )
             elif result[2] == 0:
-                print("update")
+
                 completed = time - result[0]
                 await self.connection.execute(
                     "UPDATE gtracker SET time=?, count=?, completed=? WHERE user_id=? AND server_id=? AND type=1",
@@ -501,10 +502,10 @@ class DatabaseManager:
                 )
             else:
                 return [result[2], result[1]]
-            print('commit')
+
             await self.connection.commit()
             if correct:
-                await self.add_seeded_hs(user_id, server_id, time=completed, count=result[1] + 1)
+                await self.add_seeded_hs(user_id, server_id, time=completed, count=result[1] + 1 if result != None else 1)
             return [completed, result[1]+1 if result != None else 1]
 
     async def upd_ranks(self, server_id:int):
@@ -582,5 +583,106 @@ class DatabaseManager:
                         results[i][0],
                         server_id
                     )
+                )
+        await self.connection.commit()
+
+    async def dailyboard(self, server_id: int, number:int = 10) -> list:
+        # get daily leaderboard
+        # get time scores
+        dtime=[]
+        results = await self.connection.execute(
+            "SELECT rank, user_id, time, count, points FROM daily WHERE server_id=? AND type=0 AND rank<>-1 ORDER BY rank",
+            (server_id,),
+        )
+        async with results as cursor:
+            results = await cursor.fetchall()
+            nrange = number if number < len(results) else len(results)
+            for i in range(nrange):
+                dtime.append(results[i])
+        # get count scores
+        dcount = []
+        results = await self.connection.execute(
+            "SELECT rank, user_id, time, count, points FROM daily WHERE server_id=? AND type=1 AND rank<>-1 ORDER BY rank",
+            (server_id,),
+        )
+        async with results as cursor:
+            results = await cursor.fetchall()
+            nrange = number if number < len(results) else len(results)
+            for i in range(nrange):
+                dcount.append(results[i])
+
+        #      daily leaderboard by time, by count, seeded leaderboard by time, by count
+        #      [0]rank, [1]user_id, [2]time, [3]count, [4]created_at
+        return [dtime, dcount]
+
+    async def resetdaily(self, server_id: int) -> None:
+        await self.connection.execute(
+            "UPDATE daily SET rank=-1,time=-1,count=-1,points=-1 WHERE server_id=?",
+            (server_id,)
+        )
+        await self.connection.commit()
+
+    async def updatedaily(self, server_id: int) -> None:
+        # upd time ranks
+        results = await self.connection.execute(
+            "SELECT user_id, server_id FROM daily WHERE type=0 AND server_id=? ORDER BY time, count",
+            (
+                server_id,
+            )
+        )
+        async with results as cursor:
+            results = await cursor.fetchall()
+            for i in range(len(results)):
+                await self.connection.execute(
+                    "UPDATE daily SET rank=?, points=? WHERE user_id=? AND server_id=? AND type=0",
+                    (
+                        i + 1,
+                        10-i if 1<=10 else 0,
+                        results[i][0],
+                        server_id
+                    )
+                )
+        # upd count ranks
+        results = await self.connection.execute(
+            "SELECT user_id, server_id FROM daily WHERE type=1 AND server_id=? ORDER BY count, time",
+            (
+                server_id,
+            )
+        )
+        async with results as cursor:
+            results = await cursor.fetchall()
+            for i in range(len(results)):
+                await self.connection.execute(
+                    "UPDATE daily SET rank=?, points=? WHERE user_id=? AND server_id=? AND type=1",
+                    (
+                        i + 1,
+                        10-i if 1<=10 else 0,
+                        results[i][0],
+                        server_id
+                    )
+                )
+
+        await self.connection.commit()
+
+    async def addtodaily(self, user_id: int, server_id: int, time: float = None, count: int = None):
+        rows = await self.connection.execute(
+            "SELECT user_id FROM daily WHERE user_id=? AND server_id=?",
+            (user_id, server_id)
+        )
+        async with rows as cursor:
+            results = await cursor.fetchone()
+            if results == None:
+                await self.connection.execute(
+                    "INSERT INTO daily(user_id,server_id,time,count,type) VALUES (?,?,?,?,0)",
+                    (user_id, server_id, time, count)
+                )
+                await self.connection.execute(
+                    "INSERT INTO daily(user_id,server_id,time,count,type) VALUES (?,?,?,?,1)",
+                    (user_id, server_id, time, count)
+                )
+            else:
+                await self.connection.execute(
+                    "UPDATE daily SET time=?, count=? WHERE user_id=? AND server_id=?=",
+                    (time, count, user_id, server_id)
                 )
         await self.connection.commit()

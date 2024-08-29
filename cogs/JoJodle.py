@@ -6,13 +6,15 @@ Description:
 Version: 6.2.0
 """
 import random
-
 import discord
-from discord.ext import commands
+from discord.ext import commands, tasks
 from discord.ext.commands import Context
-from discord import app_commands
-from discord import interactions
+from discord import app_commands, interactions
 import datetime
+import pytz
+
+
+midnight = datetime.time(hour=0, minute=0, tzinfo=pytz.timezone('US/Eastern'))
 
 class Character:
     def __init__(self,name,parts,colors,range,ally):
@@ -21,6 +23,7 @@ class Character:
         self.colors = colors
         self.range = range
         self.ally = ally
+
 
     def GetName(self):
         return self.name
@@ -148,7 +151,7 @@ class CharactersList:
         ["Gwess",                   "6",        "Purple,Green,Blue", "Long", "N/A"],
         ["Enrico Pucci",            "6",        "Black,White,Gold", "Long", "Villain"],
         ["Johngalli A.",            "6",        "Purple,White", "Long", "Villain"],
-        ["The Green Baby",          "6",        "Green,Red", "Close", "Close"],
+        ["The Green Baby",          "6",        "Green,Red", "Close", "N/A"],
         ["Guccio",                  "6",        "Blue,Black,White", "Auto", "Villain"],
         ["Sports Maxx",             "6",        "Purple,Blue,Yellow", "Auto", "Villain"],
         ["Thunder McQueen",         "6",        "Blue,Tan,Blond", "Long", "Villain"],
@@ -201,6 +204,8 @@ class Jojodle(commands.Cog, name="JoJodle"):
         self.colors = [0xf5462f,0x38eb7d,0xf5ee2f,0xe483ff]
         self.cemoji = "\U0001F389"
         self.SetDay()
+        channels = bot.get_channel(1275882923530391745)
+        self.midnightreset.start(channels)
 
     def CompareGuess(self, char1, char2):
         results = []
@@ -294,10 +299,7 @@ class Jojodle(commands.Cog, name="JoJodle"):
 #User Commands
 
     #autocomplete choices for all guess commands
-    async def guess_autocomplete(self,
-                               interaction: discord.Interaction,
-                               current: str,
-                               ) -> [app_commands.Choice[str]]:
+    async def guess_autocomplete(self, interaction: discord.Interaction, current: str,) -> [app_commands.Choice[str]]:
         choices = []
         for char in self.charList.charObjects:
             choices.append(char.GetName())
@@ -314,9 +316,9 @@ class Jojodle(commands.Cog, name="JoJodle"):
     @app_commands.autocomplete(choices=guess_autocomplete)
     @app_commands.describe(choices="The character you want to guess.")
     async def guess(self, i: discord.Interaction, choices: str):
-        userName = i.user.nick if i.user.nick != None else i.user.name
-        if datetime.datetime.now().strftime("%j%Y") != self.day:
-            self.SetDay()
+        userName = i.user.nick if i.user.nick != None else i.user.display_name
+        '''if datetime.datetime.now().strftime("%j%Y") != self.day:
+            self.SetDay()'''
         charGuess = None
         results = []
         choices = choices.lower()
@@ -340,8 +342,9 @@ class Jojodle(commands.Cog, name="JoJodle"):
         embeds.append(discord.Embed(description=f"||Stand range: {charGuess.GetRange()}||", color=self.colors[results[3]]))
         embeds.append(discord.Embed(description=f"||Alliance: {charGuess.GetAlly()}||", color=self.colors[results[4]]))
         await i.response.send_message(embeds=embeds)
-        message = await i.original_response()
-        await message.add_reaction(self.cemoji)
+        if results[0] == 1:
+            message = await i.original_response()
+            await message.add_reaction(self.cemoji)
 
 
     #seeded guess command
@@ -353,7 +356,7 @@ class Jojodle(commands.Cog, name="JoJodle"):
     @app_commands.describe(choices="The character you want to guess.")
     @app_commands.describe(seed="What to set the seed as (leave blank for the previous seed).")
     async def seededguess(self, i: discord.Interaction, choices: str, seed: str = None):
-        userName = i.user.nick if i.user.nick != None else i.user.name
+        userName = i.user.nick if i.user.nick != None else i.user.display_name
         if seed != None:
             self.SetSeed(seed)
         charGuess = None
@@ -379,8 +382,9 @@ class Jojodle(commands.Cog, name="JoJodle"):
         embeds.append(discord.Embed(description=f"||Stand range: {charGuess.GetRange()}||", color=self.colors[results[3]]))
         embeds.append(discord.Embed(description=f"||Alliance: {charGuess.GetAlly()}||", color=self.colors[results[4]]))
         await i.response.send_message(embeds=embeds)
-        message = await i.original_response()
-        await message.add_reaction(self.cemoji)
+        if results[0] == 1:
+            message = await i.original_response()
+            await message.add_reaction(self.cemoji)
 
 #highscore commands
     #manually add highscores
@@ -563,7 +567,7 @@ class Jojodle(commands.Cog, name="JoJodle"):
         lbresults = await self.bot.database.leaderboard(interaction.guild.id, 10)
         embeds = []
         # daily leaderboard
-        daily = discord.Embed(title="Daily Leaderboard", color=self.colors[3])
+        daily = discord.Embed(title="All Time Daily Leaderboard", color=self.colors[3])
         # time scores
         dtime = ""
         for dtres in lbresults[0]:
@@ -593,16 +597,16 @@ class Jojodle(commands.Cog, name="JoJodle"):
         embeds.append(daily)
 
         # seeded leaderboard
-        seeded = discord.Embed(title="Seeded Leaderboard", color=self.colors[3])
+        seeded = discord.Embed(title="All Time Seeded Leaderboard", color=self.colors[3])
         # time scores
         stime = ""
         for stres in lbresults[0]:
             user_ = await interaction.client.fetch_user(stres[1])
             name = user_.display_name
-            stime += "**Rank:** {rank:-<6} - **User:** {user:-<20} | {time:-<6.2f}s - {count:-<3}guesses - *{date:<19}* |\n".format(
+            stime += "**Rank:** {rank:-<6} - **User:** {user:-<20} | {time:-<6}s - {count:-<3}guesses - *{date:<19}* |\n".format(
                 rank="**" + str(stres[0]) + "**",
                 user="**" + name + "**",
-                time=stres[2],
+                time="**{time:.2f}**".format(time=stres[2]),
                 count=stres[3],
                 date=stres[4]
             )
@@ -621,6 +625,88 @@ class Jojodle(commands.Cog, name="JoJodle"):
             )
         seeded.add_field(name="Sorted by Count", value=scount, inline=False)
         embeds.append(seeded)
+        await interaction.response.send_message(embeds=embeds)
+
+    @tasks.loop(time=midnight)
+    async def midnightreset(self, channel: discord.TextChannel) -> None:
+        print("hello world")
+        #      daily leaderboard by time, by count
+        #      [0]rank, [1]user_id, [2]time, [3]count, [4]points
+        lbresults = await self.bot.database.dailyboard(channel.guild.id, 10)
+        embeds = []
+        # daily leaderboard
+        daily = discord.Embed(title="Daily Leaderboard {date}".format(date=datetime.datetime.now().strftime("%x")),
+                              color=self.colors[3])
+        # time scores
+        dtime = ""
+        for dtres in lbresults[0]:
+            user_ = await (channel.guild.get_member(dtres[1]))
+            name = user_.display_name
+            dtime += "**Rank:** {rank:-<6} - **User:** {user:-<20} | {time:-<6}s - {count:-<3}guesses - Pts: +{points:-<8} |\n".format(
+                rank="**" + str(dtres[0]) + "**",
+                user="**" + name + "**",
+                time="**{time:.2f}**".format(time=dtres[2]),
+                count=dtres[3],
+                points="**" + str(dtres[4]) + "**"
+            )
+        daily.add_field(name="Sorted by Time", value=dtime, inline=True)
+        # count scores
+        dcount = ""
+        for dcres in lbresults[1]:
+            user_ = await channel.guild.get_member(dcres[1])
+            name = user_.display_name
+            dcount += "**Rank:** {rank:-<6} - **User:** {user:-<20} | {time:-<6.2f}s - {count:-<7}guesses - Pts: +{points:-<8} |\n".format(
+                rank="**" + str(dcres[0]) + "**",
+                user="**" + name + "**",
+                time=dcres[2],
+                count="**" + str(dcres[3]) + "**",
+                points="**" + str(dcres[4]) + "**"
+            )
+        daily.add_field(name="Sorted by Count", value=dcount, inline=True)
+        embeds.append(daily)
+        await channel.send(embeds=embeds)
+
+    @app_commands.command(
+        name="dailyboard",
+        description="Shows the leaderboard of users in this server.",
+    )
+    @commands.has_guild_permissions(manage_messages=True)
+    async def dailyboard(self, interaction: discord.Interaction) -> None:
+        await self.bot.database.updatedaily(interaction.guild.id)
+        #      daily leaderboard by time, by count
+        #      [0]rank, [1]user_id, [2]time, [3]count, [4]points
+        lbresults = await self.bot.database.dailyboard(interaction.guild.id, 10)
+        embeds = []
+        # daily leaderboard
+        daily = discord.Embed(title="Daily Leaderboard {date}".format(date=datetime.datetime.now().strftime("%x")), color=self.colors[3])
+        # time scores
+        dtime = ""
+        for dtres in lbresults[0]:
+            user_ = await interaction.client.fetch_user(dtres[1])
+            name = user_.display_name
+            dtime += "**Rank:** {rank:-<6} - **User:** {user:-<20} | {time:-<6}s - {count:-<3}guesses - Pts: +{points:-<8} |\n".format(
+                rank="**" + str(dtres[0]) + "**",
+                user="**" + name + "**",
+                time="**{time:.2f}**".format(time=dtres[2]),
+                count=dtres[3],
+                points="**" + str(dtres[4]) + "**"
+            )
+        daily.add_field(name="Sorted by Time", value=dtime, inline=True)
+        # count scores
+        dcount = ""
+        for dcres in lbresults[1]:
+            user_ = await interaction.client.fetch_user(dcres[1])
+            name = user_.display_name
+            dcount += "**Rank:** {rank:-<6} - **User:** {user:-<20} | {time:-<6.2f}s - {count:-<7}guesses - Pts: +{points:-<8} |\n".format(
+                rank="**" + str(dcres[0]) + "**",
+                user="**" + name + "**",
+                time=dcres[2],
+                count="**" + str(dcres[3]) + "**",
+                points="**" + str(dcres[4]) + "**"
+            )
+        daily.add_field(name="Sorted by Count", value=dcount, inline=True)
+        embeds.append(daily)
+
         await interaction.response.send_message(embeds=embeds)
 
 # And then we finally add the cog to the bot so that it can load, unload, reload and use it's content.
