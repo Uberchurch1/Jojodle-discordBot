@@ -5,7 +5,7 @@ Description:
 
 Version: 6.2.0
 """
-
+import datetime
 import json
 import logging
 import os
@@ -15,6 +15,7 @@ import sys
 
 import aiosqlite
 import discord
+import pytz
 from discord.ext import commands, tasks
 from discord.ext.commands import Context
 from dotenv import load_dotenv
@@ -72,6 +73,8 @@ It is recommended to use slash commands and therefore not use prefix commands.
 If you want to use prefix commands, make sure to also enable the intent below in the Discord developer portal.
 """
 intents.message_content = True
+
+
 
 # Setup both of the loggers
 
@@ -170,7 +173,7 @@ class DiscordBot(commands.Bot):
                         f"Failed to load extension {extension}\n{exception}"
                     )
 
-    @tasks.loop(minutes=1.0)
+    @tasks.loop(minutes=10)
     async def status_task(self) -> None:
         """
         Setup the game status task of the bot.

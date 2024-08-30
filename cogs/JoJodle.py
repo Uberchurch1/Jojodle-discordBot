@@ -12,9 +12,8 @@ from discord.ext.commands import Context
 from discord import app_commands, interactions
 import datetime
 import pytz
+midnight = datetime.time(hour=0, minute=11, tzinfo=pytz.timezone("US/Eastern"))
 
-
-midnight = datetime.time(hour=0, minute=0, tzinfo=pytz.timezone('US/Eastern'))
 
 class Character:
     def __init__(self,name,parts,colors,range,ally):
@@ -204,8 +203,9 @@ class Jojodle(commands.Cog, name="JoJodle"):
         self.colors = [0xf5462f,0x38eb7d,0xf5ee2f,0xe483ff]
         self.cemoji = "\U0001F389"
         self.SetDay()
-        channels = bot.get_channel(1275882923530391745)
-        self.midnightreset.start(channels)
+        self.channels = None
+        self.midnightreset.start(self.channels, True)
+
 
     def CompareGuess(self, char1, char2):
         results = []
@@ -283,6 +283,14 @@ class Jojodle(commands.Cog, name="JoJodle"):
         # Do your stuff here
         embed = discord.Embed(description=f"||Today's JoJo's character is {self.curChar.GetName()} from part(s): {self.curChar.GetParts()} their main colors are {self.curChar.GetColors()}||")
         await context.send(embed=embed)
+
+    @commands.command(
+        name="testmidnight",
+        description="tests the midnight task",
+    )
+    @commands.is_owner()
+    async def testmidnight(self, context: Context, reset:bool = False) -> None:
+        await self.midnightreset(self.channels, reset)
 
     @commands.command(
         name="getrandint",
@@ -628,8 +636,12 @@ class Jojodle(commands.Cog, name="JoJodle"):
         await interaction.response.send_message(embeds=embeds)
 
     @tasks.loop(time=midnight)
-    async def midnightreset(self, channel: discord.TextChannel) -> None:
-        print("hello world")
+    async def midnightreset(self, channel: discord.TextChannel, reset:bool = False) -> None:
+        if channel == None:
+            await self.bot.wait_until_ready()
+            self.channels = self.bot.get_channel(1275882923530391745)
+            channel = self.channels
+        print(channel)
         #      daily leaderboard by time, by count
         #      [0]rank, [1]user_id, [2]time, [3]count, [4]points
         lbresults = await self.bot.database.dailyboard(channel.guild.id, 10)
@@ -640,7 +652,9 @@ class Jojodle(commands.Cog, name="JoJodle"):
         # time scores
         dtime = ""
         for dtres in lbresults[0]:
-            user_ = await (channel.guild.get_member(dtres[1]))
+            await self.bot.wait_until_ready()
+            user_ = await discord.ext.commands.Bot.fetch_user(self.bot,dtres[1])
+            print(user_,dtres[1])
             name = user_.display_name
             dtime += "**Rank:** {rank:-<6} - **User:** {user:-<20} | {time:-<6}s - {count:-<3}guesses - Pts: +{points:-<8} |\n".format(
                 rank="**" + str(dtres[0]) + "**",
@@ -653,7 +667,7 @@ class Jojodle(commands.Cog, name="JoJodle"):
         # count scores
         dcount = ""
         for dcres in lbresults[1]:
-            user_ = await channel.guild.get_member(dcres[1])
+            user_ = await discord.ext.commands.Bot.fetch_user(self.bot,dtres[1])
             name = user_.display_name
             dcount += "**Rank:** {rank:-<6} - **User:** {user:-<20} | {time:-<6.2f}s - {count:-<7}guesses - Pts: +{points:-<8} |\n".format(
                 rank="**" + str(dcres[0]) + "**",
@@ -665,6 +679,16 @@ class Jojodle(commands.Cog, name="JoJodle"):
         daily.add_field(name="Sorted by Count", value=dcount, inline=True)
         embeds.append(daily)
         await channel.send(embeds=embeds)
+        await self.bot.database.addtomonthly(channel.guild.id, reset)
+
+    @midnightreset.before_loop
+    async def before_midnightreset(self) -> None:
+        """
+        Before starting the status changing task, we make sure the bot is ready
+        """
+        print("waiting for bot load")
+        await self.bot.wait_until_ready()
+        print("bot is ready")
 
     @app_commands.command(
         name="dailyboard",
@@ -705,6 +729,36 @@ class Jojodle(commands.Cog, name="JoJodle"):
                 points="**" + str(dcres[4]) + "**"
             )
         daily.add_field(name="Sorted by Count", value=dcount, inline=True)
+        embeds.append(daily)
+
+        await interaction.response.send_message(embeds=embeds)
+
+    @app_commands.command(
+        name="monthlyboard",
+        description="Shows the leaderboard of users in this server.",
+    )
+    @commands.has_guild_permissions(manage_messages=True)
+    async def monthlyboard(self, interaction: discord.Interaction) -> None:
+        await self.bot.database.updatedaily(interaction.guild.id)
+        #      daily leaderboard by time, by count
+        #      [0]rank, [1]user_id, [2]time, [3]count, [4]points
+        lbresults = await self.bot.database.monthlyboard(interaction.guild.id, 10)
+        embeds = []
+        # daily leaderboard
+        daily = discord.Embed(title="Monthly Leaderboard {date}".format(date=datetime.datetime.now().strftime("%B, %Y")),color=self.colors[3])
+        # time scores
+        mscores = ""
+        for monthres in lbresults:
+            user_ = await interaction.client.fetch_user(monthres[1])
+            name = user_.display_name
+            mscores += "**Rank:** {rank:-<6} - **User:** {user:-<20} | Pts: {points:-<4} - {count:-<3}guesses - {time:-<4}s |\n".format(
+                rank="**" + str(monthres[0]) + "**",
+                user="**" + name + "**",
+                time="{time:.2f}".format(time=monthres[2]),
+                count=monthres[3],
+                points="**" + str(monthres[4]) + "**"
+            )
+        daily.description=mscores
         embeds.append(daily)
 
         await interaction.response.send_message(embeds=embeds)

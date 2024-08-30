@@ -455,10 +455,13 @@ class DatabaseManager:
                     )
                 )
             else:
+                print("already completed")
+                await self.addtodaily(user_id, server_id, time=result[2], count=result[1])
                 return [result[2], result[1]]
 
             await self.connection.commit()
             if correct:
+                print("correct guess")
                 await self.add_daily_hs(user_id, server_id, time=completed, count=result[1] + 1)
                 await self.addtodaily(user_id,server_id,time=completed,count=result[1] + 1)
             return [completed, result[1]+1 if result != None else 1]
@@ -625,7 +628,7 @@ class DatabaseManager:
     async def updatedaily(self, server_id: int) -> None:
         # upd time ranks
         results = await self.connection.execute(
-            "SELECT user_id, server_id FROM daily WHERE type=0 AND server_id=? ORDER BY time, count",
+            "SELECT user_id, server_id FROM daily WHERE type=0 AND server_id=? AND COUNT<>-1 ORDER BY time, count",
             (
                 server_id,
             )
@@ -644,7 +647,7 @@ class DatabaseManager:
                 )
         # upd count ranks
         results = await self.connection.execute(
-            "SELECT user_id, server_id FROM daily WHERE type=1 AND server_id=? ORDER BY count, time",
+            "SELECT user_id, server_id FROM daily WHERE type=1 AND server_id=? AND COUNT<>-1 ORDER BY count, time",
             (
                 server_id,
             )
@@ -665,6 +668,7 @@ class DatabaseManager:
         await self.connection.commit()
 
     async def addtodaily(self, user_id: int, server_id: int, time: float = None, count: int = None):
+        print("adding to daily")
         rows = await self.connection.execute(
             "SELECT user_id FROM daily WHERE user_id=? AND server_id=?",
             (user_id, server_id)
@@ -682,7 +686,87 @@ class DatabaseManager:
                 )
             else:
                 await self.connection.execute(
-                    "UPDATE daily SET time=?, count=? WHERE user_id=? AND server_id=?=",
+                    "UPDATE daily SET time=?, count=? WHERE user_id=? AND server_id=?",
                     (time, count, user_id, server_id)
+                )
+        await self.connection.commit()
+
+    async def monthlyboard(self, server_id: int, number:int = 10) -> list:
+        await self.updatemonthly(server_id)
+        # get daily leaderboard
+        # get time scores
+        monthres=[]
+        results = await self.connection.execute(
+            "SELECT rank, user_id, time, count, points FROM monthly WHERE server_id=? AND rank<>-1 ORDER BY rank",
+            (server_id,),
+        )
+        async with results as cursor:
+            results = await cursor.fetchall()
+            nrange = number if number < len(results) else len(results)
+            for i in range(nrange):
+                monthres.append(results[i])
+
+        #      daily leaderboard by time, by count, seeded leaderboard by time, by count
+        #      [0]rank, [1]user_id, [2]time, [3]count, [4]created_at
+        return monthres
+
+    async def addtomonthly(self, server_id: int, reset:bool = False):
+        rows = await self.connection.execute(
+            "SELECT user_id, time, count, points FROM daily WHERE server_id=? ORDER BY user_id, type",
+            (server_id,)
+        )
+        async with rows as cursor:
+            dailies = await cursor.fetchall()
+            for result in dailies:
+                user_id = result[0]
+                time = result[1]
+                count = result[2]
+                points = result[3]
+                existing = await self.connection.execute(
+                    "SELECT time, count, points FROM monthly WHERE user_id=? AND server_id=?",
+                    (user_id, server_id)
+                )
+                async with existing as cursor:
+                    results = await cursor.fetchall()
+                    if results == None:
+                        await self.connection.execute(
+                            "INSERT INTO monthly(user_id,server_id,time,count,type) VALUES (?,?,?,?,0)",
+                            (user_id, server_id, time, count)
+                        )
+                        await self.connection.execute(
+                            "INSERT INTO monthly(user_id,server_id,time,count,type) VALUES (?,?,?,?,1)",
+                            (user_id, server_id, time, count)
+                        )
+                    else:
+                        for result in results:
+                            await self.connection.execute(
+                                "UPDATE monthly SET time=?, count=?, points=? WHERE user_id=? AND server_id=?=",
+                                (time if result[0]>time else result[0],
+                                 count if result[1]>count else result[1],
+                                 points + result[2],
+                                 user_id, server_id)
+                            )
+        await self.connection.commit()
+        if reset:
+            await self.resetdaily(server_id)
+
+    async def updatemonthly(self, server_id: int) -> None:
+        # upd time ranks
+        results = await self.connection.execute(
+            "SELECT user_id, server_id FROM monthly WHERE server_id=? ORDER BY points, count, time",
+            (
+                server_id,
+            )
+        )
+        async with results as cursor:
+            results = await cursor.fetchall()
+            for i in range(len(results)):
+                await self.connection.execute(
+                    "UPDATE monthly SET rank=? WHERE user_id=? AND server_id=?",
+                    (
+                        i + 1,
+                        results[i][0],
+                        server_id
+                    )
                 )
         await self.connection.commit()
