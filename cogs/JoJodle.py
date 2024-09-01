@@ -12,7 +12,7 @@ from discord.ext.commands import Context
 from discord import app_commands, interactions
 import datetime
 import pytz
-midnight = datetime.time(hour=0, minute=11, tzinfo=pytz.timezone("US/Eastern"))
+midnight = datetime.time(hour=0, minute=0, tzinfo=pytz.timezone("US/Eastern"))
 
 
 class Character:
@@ -667,7 +667,7 @@ class Jojodle(commands.Cog, name="JoJodle"):
         # count scores
         dcount = ""
         for dcres in lbresults[1]:
-            user_ = await discord.ext.commands.Bot.fetch_user(self.bot,dtres[1])
+            user_ = await discord.ext.commands.Bot.fetch_user(self.bot,dcres[1])
             name = user_.display_name
             dcount += "**Rank:** {rank:-<6} - **User:** {user:-<20} | {time:-<6.2f}s - {count:-<7}guesses - Pts: +{points:-<8} |\n".format(
                 rank="**" + str(dcres[0]) + "**",
