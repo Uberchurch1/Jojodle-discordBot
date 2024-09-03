@@ -419,7 +419,6 @@ class DatabaseManager:
 
     async def track_guess(self, user_id: int, server_id: int, time: time.struct_time, date: time.struct_time, correct: bool = False) -> [float, int]:
         completed = 0
-        await self.reset_comp(date)
         rows = await self.connection.execute(
             "SELECT time, count, completed FROM gtracker WHERE user_id=? AND server_id=? AND type=0",
             (
@@ -443,7 +442,7 @@ class DatabaseManager:
                 )
             elif result[2] == 0:
 
-                completed = time - result[0] if result != None else 0
+                completed = time - result[0] if result[0] != 0 else 0
                 await self.connection.execute(
                     "UPDATE gtracker SET time=?, count=?, completed=? WHERE user_id=? AND server_id=? AND type=0",
                     (
@@ -492,7 +491,7 @@ class DatabaseManager:
                 )
             elif result[2] == 0:
 
-                completed = time - result[0]
+                completed = time - result[0] if result[0] != 0 else 0
                 await self.connection.execute(
                     "UPDATE gtracker SET time=?, count=?, completed=? WHERE user_id=? AND server_id=? AND type=1",
                     (
@@ -710,7 +709,7 @@ class DatabaseManager:
         #      [0]rank, [1]user_id, [2]time, [3]count, [4]created_at
         return monthres
 
-    async def addtomonthly(self, server_id: int, reset:bool = False):
+    async def addtomonthly(self, server_id: int):
         rows = await self.connection.execute(
             "SELECT user_id, time, count, points FROM daily WHERE server_id=? ORDER BY user_id, type",
             (server_id,)
@@ -747,8 +746,6 @@ class DatabaseManager:
                                  user_id, server_id)
                             )
         await self.connection.commit()
-        if reset:
-            await self.resetdaily(server_id)
 
     async def updatemonthly(self, server_id: int) -> None:
         # upd time ranks

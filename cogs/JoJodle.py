@@ -202,7 +202,6 @@ class Jojodle(commands.Cog, name="JoJodle"):
         self.charList = CharactersList()
         self.colors = [0xf5462f,0x38eb7d,0xf5ee2f,0xe483ff]
         self.cemoji = "\U0001F389"
-        self.SetDay()
         self.channels = None
         self.midnightreset.start(self.channels, True)
 
@@ -221,12 +220,14 @@ class Jojodle(commands.Cog, name="JoJodle"):
         random.seed(self.seed)
         self.seedChar = self.charList.GetChar(random.randint(0, self.charList.CharCount() - 1))
 
-    def SetDay(self):
-        print("Setting Day")
-        self.ResetComp()
-        self.day = datetime.datetime.now().strftime("%j%Y")
-        random.seed(self.day)
-        self.curChar = self.charList.GetChar(random.randint(0, self.charList.CharCount() - 1))
+    async def SetDay(self):
+        print("(Re)Setting Day")
+
+        self.day = datetime.datetime.now().strftime("%j%Y")  # update the day var
+        random.seed(self.day)  # update the daily seed
+        self.curChar = self.charList.GetChar(random.randint(0, self.charList.CharCount() - 1))  # update the current character
+        await self.ResetComp()  # reset the gtracker
+
         print("Finished Setting Day")
 
     async def ResetComp(self):
@@ -267,6 +268,7 @@ class Jojodle(commands.Cog, name="JoJodle"):
             description="The scope must be `global` or `guild`.", color=0xE02B2B
         )
         await context.send(embed=embed)
+        await self.SetDay()
     # Here you can just add your own commands, you'll always need to provide "self" as first parameter.
 
     @commands.command(
@@ -324,6 +326,7 @@ class Jojodle(commands.Cog, name="JoJodle"):
     @app_commands.autocomplete(choices=guess_autocomplete)
     @app_commands.describe(choices="The character you want to guess.")
     async def guess(self, i: discord.Interaction, choices: str):
+        await self.bot.database.resetdaily(i.guild.id)
         userName = i.user.nick if i.user.nick != None else i.user.display_name
         '''if datetime.datetime.now().strftime("%j%Y") != self.day:
             self.SetDay()'''
@@ -635,6 +638,7 @@ class Jojodle(commands.Cog, name="JoJodle"):
         embeds.append(seeded)
         await interaction.response.send_message(embeds=embeds)
 
+    # before waits for bot
     @tasks.loop(time=midnight)
     async def midnightreset(self, channel: discord.TextChannel, reset:bool = False) -> None:
         if channel == None:
@@ -679,7 +683,7 @@ class Jojodle(commands.Cog, name="JoJodle"):
         daily.add_field(name="Sorted by Count", value=dcount, inline=True)
         embeds.append(daily)
         await channel.send(embeds=embeds)
-        await self.bot.database.addtomonthly(channel.guild.id, reset)
+        await self.bot.database.addtomonthly(channel.guild.id)
 
     @midnightreset.before_loop
     async def before_midnightreset(self) -> None:
@@ -689,6 +693,15 @@ class Jojodle(commands.Cog, name="JoJodle"):
         print("waiting for bot load")
         await self.bot.wait_until_ready()
         print("bot is ready")
+        await self.SetDay()
+
+    @midnightreset.after_loop
+    async def after_midnightreset(self) -> None:
+        """
+        after we print the dailyboard and update the monthlyboard we reset the day
+        :return:
+        """
+        await self.SetDay()
 
     @app_commands.command(
         name="dailyboard",
