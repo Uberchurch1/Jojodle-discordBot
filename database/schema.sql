@@ -47,7 +47,8 @@ CREATE TABLE IF NOT EXISTS `daily` (
   `time` float(11) NOT NULL,
   `count` int(11) NOT NULL,
   `rank` int(11) NOT NULL DEFAULT -1,
-  `points` int(11) NOT NULL DEFAULT -1
+  `points` int(11) NOT NULL DEFAULT -1,
+  `date` int(11) NOT NULL
 );
 CREATE TABLE IF NOT EXISTS `monthly` (
   `user_id` varchar(20) NOT NULL,

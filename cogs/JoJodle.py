@@ -338,7 +338,6 @@ class Jojodle(commands.Cog, name="JoJodle"):
     @app_commands.autocomplete(choices=guess_autocomplete)
     @app_commands.describe(choices="The character you want to guess.")
     async def guess(self, i: discord.Interaction, choices: str):
-        await self.bot.database.resetdaily(i.guild.id)
         userName = i.user.nick if i.user.nick != None else i.user.display_name
         '''if datetime.datetime.now().strftime("%j%Y") != self.day:
             self.SetDay()'''
@@ -651,13 +650,15 @@ class Jojodle(commands.Cog, name="JoJodle"):
         await interaction.response.send_message(embeds=embeds)
 
     # before waits for bot
-    @tasks.loop(time=midnight)
+    @tasks.loop(time=midnight)#
     async def midnightreset(self, channel: discord.TextChannel, reset:bool = False) -> None:
+        print("midnight resetting")
         if channel == None:
             await self.bot.wait_until_ready()
             self.channels = self.bot.get_channel(1275882923530391745)
             channel = self.channels
         print(channel)
+        await self.bot.database.updatedaily(channel.guild.id)
         #      daily leaderboard by time, by count
         #      [0]rank, [1]user_id, [2]time, [3]count, [4]points
         lbresults = await self.bot.database.dailyboard(channel.guild.id, 10)
@@ -696,6 +697,9 @@ class Jojodle(commands.Cog, name="JoJodle"):
         embeds.append(daily)
         await channel.send(embeds=embeds)
         await self.bot.database.addtomonthly(channel.guild.id)
+        print("finished reset")
+        await self.SetDay()
+        await self.bot.database.resetdaily(channel.guild.id, self.day)
 
     @midnightreset.before_loop
     async def before_midnightreset(self) -> None:
@@ -705,7 +709,6 @@ class Jojodle(commands.Cog, name="JoJodle"):
         print("waiting for bot load")
         await self.bot.wait_until_ready()
         print("bot is ready")
-        await self.SetDay()
 
     @midnightreset.after_loop
     async def after_midnightreset(self) -> None:

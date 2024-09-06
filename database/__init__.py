@@ -417,7 +417,7 @@ class DatabaseManager:
         )
         await self.connection.commit()
 
-    async def track_guess(self, user_id: int, server_id: int, time: time.struct_time, date: time.struct_time, correct: bool = False) -> [float, int]:
+    async def track_guess(self, user_id: int, server_id: int, time: time.struct_time, date: int, correct: bool = False) -> [float, int]:
         completed = 0
         rows = await self.connection.execute(
             "SELECT time, count, completed FROM gtracker WHERE user_id=? AND server_id=? AND type=0",
@@ -455,13 +455,13 @@ class DatabaseManager:
                 )
             else:
                 print("already completed")
-                await self.addtodaily(user_id, server_id, time=result[2], count=result[1])
+                await self.addtodaily(user_id, server_id, time=result[2], count=result[1], date=date)
                 return [result[2], result[1]]
 
             await self.connection.commit()
             if correct:
                 print("correct guess")
-                await self.add_daily_hs(user_id, server_id, time=completed, count=result[1] + 1)
+                await self.add_daily_hs(user_id, server_id, time=completed, count=result[1] + 1 if (result != None) else 1)
                 await self.addtodaily(user_id,server_id,time=completed,count=result[1] + 1)
             return [completed, result[1]+1 if result != None else 1]
 
@@ -617,10 +617,10 @@ class DatabaseManager:
         #      [0]rank, [1]user_id, [2]time, [3]count, [4]created_at
         return [dtime, dcount]
 
-    async def resetdaily(self, server_id: int) -> None:
+    async def resetdaily(self, server_id: int, date: int) -> None:
         await self.connection.execute(
-            "UPDATE daily SET rank=-1,time=-1,count=-1,points=-1 WHERE server_id=?",
-            (server_id,)
+            "UPDATE daily SET rank=-1,time=-1,count=-1,points=-1 WHERE server_id=? AND date<>?",
+            (server_id, date)
         )
         await self.connection.commit()
 
@@ -666,7 +666,7 @@ class DatabaseManager:
 
         await self.connection.commit()
 
-    async def addtodaily(self, user_id: int, server_id: int, time: float = None, count: int = None):
+    async def addtodaily(self, user_id: int, server_id: int, date: int, time: float = None, count: int = None):
         print("adding to daily")
         rows = await self.connection.execute(
             "SELECT user_id FROM daily WHERE user_id=? AND server_id=?",
@@ -676,17 +676,17 @@ class DatabaseManager:
             results = await cursor.fetchone()
             if results == None:
                 await self.connection.execute(
-                    "INSERT INTO daily(user_id,server_id,time,count,type) VALUES (?,?,?,?,0)",
-                    (user_id, server_id, time, count)
+                    "INSERT INTO daily(user_id,server_id,time,count,type,date) VALUES (?,?,?,?,0,?)",
+                    (user_id, server_id, time, count, date)
                 )
                 await self.connection.execute(
-                    "INSERT INTO daily(user_id,server_id,time,count,type) VALUES (?,?,?,?,1)",
-                    (user_id, server_id, time, count)
+                    "INSERT INTO daily(user_id,server_id,time,count,type,date) VALUES (?,?,?,?,1,?)",
+                    (user_id, server_id, time, count, date)
                 )
             else:
                 await self.connection.execute(
-                    "UPDATE daily SET time=?, count=? WHERE user_id=? AND server_id=?",
-                    (time, count, user_id, server_id)
+                    "UPDATE daily SET time=?, count=?, date=? WHERE user_id=? AND server_id=?",
+                    (time, count, date, user_id, server_id)
                 )
         await self.connection.commit()
 
