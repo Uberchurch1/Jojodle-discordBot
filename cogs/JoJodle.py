@@ -671,7 +671,7 @@ class Jojodle(commands.Cog, name="JoJodle"):
         for dtres in lbresults[0]:
             await self.bot.wait_until_ready()
             user_ = await discord.ext.commands.Bot.fetch_user(self.bot,dtres[1])
-            print(user_,dtres[1])
+            #print(user_,dtres[1])
             name = user_.display_name
             dtime += "**Rank:** {rank:-<6} - **User:** {user:-<20} | {time:-<6}s - {count:-<3}guesses - Pts: +{points:-<8} |\n".format(
                 rank="**" + str(dtres[0]) + "**",

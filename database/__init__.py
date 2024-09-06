@@ -710,47 +710,49 @@ class DatabaseManager:
         return monthres
 
     async def addtomonthly(self, server_id: int):
+        print("adding to monthly")
         rows = await self.connection.execute(
             "SELECT user_id, time, count, points FROM daily WHERE server_id=? ORDER BY user_id, type",
             (server_id,)
         )
         async with rows as cursor:
             dailies = await cursor.fetchall()
-            for result in dailies:
-                user_id = result[0]
-                time = result[1]
-                count = result[2]
-                points = result[3]
+            for dailyres in dailies:
+                user_id = dailyres[0]
+                print(user_id)
+                time = dailyres[1]
+                count = dailyres[2]
+                points = dailyres[3]
                 existing = await self.connection.execute(
                     "SELECT time, count, points FROM monthly WHERE user_id=? AND server_id=?",
                     (user_id, server_id)
                 )
-                async with existing as cursor:
-                    results = await cursor.fetchall()
-                    if results == None:
+                async with existing as cursor1:
+                    results = await cursor1.fetchall()
+                    if len(results) == 0:
+                        print("create new")
                         await self.connection.execute(
-                            "INSERT INTO monthly(user_id,server_id,time,count,type) VALUES (?,?,?,?,0)",
-                            (user_id, server_id, time, count)
-                        )
-                        await self.connection.execute(
-                            "INSERT INTO monthly(user_id,server_id,time,count,type) VALUES (?,?,?,?,1)",
-                            (user_id, server_id, time, count)
+                            "INSERT INTO monthly(user_id,server_id,time,count,points) VALUES (?,?,?,?,?)",
+                            (user_id, server_id, time, count, points)
                         )
                     else:
+                        print("update existing")
                         for result in results:
+
                             await self.connection.execute(
-                                "UPDATE monthly SET time=?, count=?, points=? WHERE user_id=? AND server_id=?=",
+                                "UPDATE monthly SET time=?, count=?, points=? WHERE user_id=? AND server_id=?",
                                 (time if result[0]>time else result[0],
                                  count if result[1]>count else result[1],
                                  points + result[2],
-                                 user_id, server_id)
+                                 user_id,
+                                 server_id)
                             )
         await self.connection.commit()
 
     async def updatemonthly(self, server_id: int) -> None:
         # upd time ranks
         results = await self.connection.execute(
-            "SELECT user_id, server_id FROM monthly WHERE server_id=? ORDER BY points, count, time",
+            "SELECT user_id, server_id FROM monthly WHERE server_id=? ORDER BY points DESC, count, time",
             (
                 server_id,
             )
