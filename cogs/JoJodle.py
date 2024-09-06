@@ -708,15 +708,9 @@ class Jojodle(commands.Cog, name="JoJodle"):
         """
         print("waiting for bot load")
         await self.bot.wait_until_ready()
+        await self.SetDay()
         print("bot is ready")
 
-    @midnightreset.after_loop
-    async def after_midnightreset(self) -> None:
-        """
-        after we print the dailyboard and update the monthlyboard we reset the day
-        :return:
-        """
-        await self.SetDay()
 
     @app_commands.command(
         name="dailyboard",

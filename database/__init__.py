@@ -462,7 +462,7 @@ class DatabaseManager:
             if correct:
                 print("correct guess")
                 await self.add_daily_hs(user_id, server_id, time=completed, count=result[1] + 1 if (result != None) else 1)
-                await self.addtodaily(user_id,server_id,time=completed,count=result[1] + 1)
+                await self.addtodaily(user_id,server_id,time=completed,count=result[1] + 1, date=date)
             return [completed, result[1]+1 if result != None else 1]
 
     async def track_sguess(self, user_id: int, server_id: int, time: float, seed: str, correct: bool = False) -> [float, int]:
