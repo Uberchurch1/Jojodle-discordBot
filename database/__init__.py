@@ -769,3 +769,70 @@ class DatabaseManager:
                     )
                 )
         await self.connection.commit()
+
+    #sets/updates the spoiler parts for a server in the table
+    async def updatespoiler(self, server_id: int, part: int) -> None:
+        results = await self.connection.execute(
+            "SELECT part FROM spoiler WHERE server_id=?",
+            (server_id,)
+        )
+        async with results as cursor:
+            result = await cursor.fetchone()
+            if result == None:
+                await self.connection.execute(
+                    "INSERT INTO spoiler(server_id,part) VALUES (?,?)",
+                    (server_id, part)
+                )
+            else:
+                await self.connection.execute(
+                    "UPDATE spoiler SET part=? WHERE server_id=?",
+                    (part, server_id)
+                )
+        await self.connection.commit()
+
+    #gets the set spoiler in part form or index form
+    async def getspoiler(self, server_id: int, index: bool = False, partslist: list = None) -> int:
+        results = await self.connection.execute(
+            "SELECT part FROM spoiler WHERE server_id=?",
+            (server_id,)
+        )
+        async with results as cursor:
+            result = await cursor.fetchone()
+            if result == None:
+                return 0
+            else:
+                if not index:
+                    return result[0]
+                else:
+                    return partslist[result[0]]
+
+    #returns the index for the daily character accounting for spoilers
+    async def getchar(self, server_id: int) -> int:
+        part = self.getspoiler(server_id)
+        results = await self.connection.execute(
+            "SELECT charind FROM charparts WHERE part=?",
+            (part,)
+        )
+        async with results as cursor:
+            result = await cursor.fetchone()
+            return result[0]
+
+    #updates/inserts the daily characters index for each part
+    async def updatechar(self, part: int, charind: int):
+        results = await self.connection.execute(
+            "SELECT charind FROM charparts WHERE part=?",
+            (part,)
+        )
+        async with results as cursor:
+            result = await cursor.fetchone()
+            if result == None:
+                await self.connection.execute(
+                    "INSERT INTO charparts(part, charind) VALUES (?,?)",
+                    (part, charind)
+                )
+            else:
+                await self.connection.execute(
+                    "UPDATE charparts SET charind = ? WHERE part=?",
+                    (charind, part)
+                )
+        await self.connection.commit()

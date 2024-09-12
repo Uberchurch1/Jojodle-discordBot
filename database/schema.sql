@@ -58,3 +58,11 @@ CREATE TABLE IF NOT EXISTS `monthly` (
   `rank` int(11) NOT NULL DEFAULT -1,
   `points` int(11) NOT NULL DEFAULT -1
 );
+CREATE TABLE IF NOT EXISTS `spoiler` (
+    `server_id` varchar(20) NOT NULL,
+    `part` int(11) NOT NULL DEFAULT 0
+);
+CREATE TABLE IF NOT EXISTS `charparts` (
+    `part` int(11) NOT NULL,
+    `charind` int(11) NOT NULL
+);

@@ -70,10 +70,14 @@ class Character:
         else:
             return 0
 
+
+
+
 class CharactersList:
     charArray = [
+        # Part 1:0-8[9], Part 2:9-17[8], Part 3:18-32[14], Part 4:33-55[22], Part 5:56-74[18], Part 6:75-89[14], Part 7:90-103[13]
         #["name",                   "part(s)",  "colors",           "stand range", "alliance"]
-        ["Jonathan Joestar",        "1",        "Blue,Brown,Grey",      "N/A", "Hero"],
+        ["Jonathan Joestar",        "1",        "Blue,Brown,Grey",      "N/A", "Hero"],  # PART 1: 0-8
         ["Will Anthonio Zeppeli",   "1",        "Black,White,Red",      "N/A", "Hero"],
         ["Robert E. O. Speedwagon", "1,2",      "Purple,Green,Yellow",  "N/A", "Hero"],
         ["Dio Brando",              "1,3,6",    "Yellow,Green,Black",   "Close", "Villain"],
@@ -82,8 +86,7 @@ class CharactersList:
         ["Danny ",                  "1",        "White,Black",         "N/A", "Hero"],
         ["Doobie",                  "1",        "Black,Brown,Yellow", "N/A", "Villain"],
         ["Tarkus & Bruford",        "1",        "White,Brown,Black",  "N/A", "Villain"],
-
-        ["Joseph Joestar",          "2,3,4",    "Brown,Green,Blue",     "Close", "Hero"],
+        ["Joseph Joestar",          "2,3,4",    "Brown,Green,Blue",     "Close", "Hero"],  # PART 2: 9-17
         ["Caesar Anthonio Zeppeli", "2",        "White,Blue,Pink",      "N/A", "Hero"],
         ["Lisa Lisa",               "2",        "Black,Red",            "N/A", "Hero"],
         ["Rudol von Stroheim",      "2",        "Black,Green,Yellow",   "N/A", "Hero"],
@@ -92,8 +95,7 @@ class CharactersList:
         ["Kars",                    "2",        "Purple,Pink",          "N/A", "Villain"],
         ["Esidisi",                 "2",        "Blue,Tan",             "N/A", "Villain"],
         ["Wamuu",                   "2",        "Tan,Yellow,Red",       "N/A", "Villain"],
-
-        ["Jotaro Joestar",          "3,4,6",    "Black,Gold,Green",     "Close", "Hero"],
+        ["Jotaro Joestar",          "3,4,6",    "Black,Gold,Green",     "Close", "Hero"],  # PART 3: 18-32
         ["Muhammad Avdol",          "3",        "Red,Gold,Tan",         "Close", "Hero"],
         ["Kakyoin Noriaki",         "3",        "Red,Green,Gold",       "Long", "Hero"],
         ["Jean Pierre Polnareff",   "3,5",      "Grey,Black,Red",       "Close", "Hero"],
@@ -108,8 +110,7 @@ class CharactersList:
         ["Daniel J. D'Arby",        "3",        "Red,White,Pink",       "Close", "Villain"],
         ["Mannish Boy",             "3",        "Tan,Red,Blue",         "Close", "Villain"],
         ["Strength",                "3",        "Black,White,Brown",    "Close", "Villain"],
-
-        ["Josuke Higashikata",      "4",        "Purple,Gold,Black",    "Close", "Hero"],
+        ["Josuke Higashikata",      "4",        "Purple,Gold,Black",    "Close", "Hero"],  # PART 4: 33-55
         ["Koichi Hirose",           "4,5",      "Green,Grey,Gold",      "Long", "Hero"],
         ["Okuyasu Nijimura",        "4",        "Blue,Green,Gold",      "Close", "Hero"],
         ["Rohan Kishibe",           "4",        "Green,White,Pink",     "Close", "Hero"],
@@ -132,8 +133,7 @@ class CharactersList:
         ["Terunosuke Miyamoto",     "4",        "White,Black,Brown",  "Close",    "Villain"],
         ["Bug-Eaten & Not Bug-Eaten", "4",      "Grey,Black",          "Long",     "Villain"],
         ["Tomoko Higashikata",      "4",        "Red,Blue,Purple",    "N/A",      "Hero"],
-
-        ["Giorno Giovanna",         "5",        "Purple,Yellow,Blue",   "Close", "Hero"],
+        ["Giorno Giovanna",         "5",        "Purple,Yellow,Blue",   "Close", "Hero"],  # PART 5: 56-74
         ["Bruno Bucciarati",        "5",        "White,Black,Gold",     "Close", "Hero"],
         ["Leone Abbacchio",         "5",        "Black,Purple,Gold",    "Close", "Hero"],
         ["Guido Mista",             "5",        "Orange,Blue,White",    "Long", "Hero"],
@@ -152,8 +152,7 @@ class CharactersList:
         ["Carne",                   "5",        "White,Red,Pink",       "Auto",     "Villain"],
         ["Squalo",                  "5",        "Blue,Orange,Grey",     "Long",     "Villain"],
         ["Trizzano",                "5",        "White,Red,Brown",      "Long",     "Villain"],
-
-        ["Jolyne Cujoh",            "6",        "Green,Orange,Yellow", "Close", "Hero"],
+        ["Jolyne Cujoh",            "6",        "Green,Orange,Yellow", "Close", "Hero"],  # PART 6: 75-89
         ["Ermes Costello",          "6",        "Green,Brown,Orange", "Close", "Hero"],
         ["Emporio Alnino",          "6",        "White,Blue,Yellow", "N/A", "Hero"],
         ["Foo Fighters",            "6",        "Green,Blue,Yellow", "N/A", "Hero"],
@@ -168,8 +167,7 @@ class CharactersList:
         ["Thunder McQueen",         "6",        "Blue,Tan,Blond", "Long", "Villain"],
         ["D an G",                  "6",        "Orange,Grey,Pink", "Auto", "Villain"],
         ["Miuccia Miuller",         "6",        "Orange,Pink,Yellow", "Close", "Villain"],
-
-        ["Johnny Joestar",          "7",        "Blue,Yellow,Purple", "Long", "Hero"],
+        ["Johnny Joestar",          "7",        "Blue,Yellow,Purple", "Long", "Hero"],  # PART 7: 90-103
         ["Gyro Zeppeli",            "7",        "Purple,Green,Tan", "Long", "Hero"],
         ["Lucy Steel",              "7",        "Pink,Yellow", "N/A", "Hero"],
         ["Diego Brando",            "7",        "Blue,Yellow,Tan", "N/A", "Villain"],
@@ -186,6 +184,8 @@ class CharactersList:
 
                 ]
     charObjects = None
+    # parts:    all   1  2   3   4   5   6   7    8
+    partsList = [103, 8, 17, 32, 55, 74, 89, 103, 103] # list of indices for charList
 
     def __init__(self):
         print("init CharactersList")
@@ -232,18 +232,45 @@ class Jojodle(commands.Cog, name="JoJodle"):
         random.seed(self.seed)
         self.seedChar = self.charList.GetChar(random.randint(0, self.charList.CharCount() - 1))
 
+    async def CurChar(self, server_id:int) -> Character:
+        charind = random.randint(0, await self.bot.database.getchar(server_id))
+        return self.charList.GetChar(charind)
+
     async def SetDay(self):
         print("(Re)Setting Day")
 
         self.day = datetime.datetime.now().strftime("%j%Y")  # update the day var
         random.seed(self.day)  # update the daily seed
-        self.curChar = self.charList.GetChar(random.randint(0, self.charList.CharCount() - 1))  # update the current character
+        # self.curChar = self.charList.GetChar(random.randint(0, self.charList.CharCount() - 1))  # update the current character
         await self.ResetComp()  # reset the gtracker
 
         print("Finished Setting Day")
 
     async def ResetComp(self):
         await self.bot.database.reset_comp(self.day)
+
+    async def GuildOwner(self, context: Context):
+        return context.author.id == context.guild.owner_id
+
+    @commands.command(
+        name="setspoiler",
+        description="Sets the parts to be included in the current guild",
+    )
+    @app_commands.describe(part="part is the last included part of JoJo's or 0 for all parts "
+                                +"ex. part=6 will not let part 7 or 8 characters show up in the JoJodle")
+    @commands.is_owner()
+    async def setspoiler(self, context: Context, part: int) -> None:
+        try:
+            spoiler = self.charList.partsList[part]
+            #set the spoiler table value for this guild
+            server_id = context.guild.id
+            self.bot.database.updatespoiler(server_id, part)
+            embed = discord.Embed(description="Spoiler has been set to " + str(part))
+        except IndexError:
+            embed = discord.Embed(
+                description="Part must be an integer 0-8.", color=0xE02B2B
+            )
+        await context.send(embed=embed)
 
     @commands.command(
         name="sync",
@@ -295,7 +322,9 @@ class Jojodle(commands.Cog, name="JoJodle"):
         :param context: The application command context.
         """
         # Do your stuff here
-        embed = discord.Embed(description=f"||Today's JoJo's character is {self.curChar.GetName()} from part(s): {self.curChar.GetParts()} their main colors are {self.curChar.GetColors()}||")
+        server_id = context.guild.id
+        curChar = await self.CurChar(server_id)
+        embed = discord.Embed(description=f"||Today's JoJo's character is {curChar.GetName()} from part(s): {curChar.GetParts()} their main colors are {curChar.GetColors()}||")
         await context.send(embed=embed)
 
     @commands.command(
@@ -339,6 +368,8 @@ class Jojodle(commands.Cog, name="JoJodle"):
     @app_commands.describe(choices="The character you want to guess.")
     async def guess(self, i: discord.Interaction, choices: str):
         userName = i.user.nick if i.user.nick != None else i.user.display_name
+        server_id = i.guild.id
+        curChar = await self.CurChar(server_id)
         '''if datetime.datetime.now().strftime("%j%Y") != self.day:
             self.SetDay()'''
         charGuess = None
@@ -347,11 +378,11 @@ class Jojodle(commands.Cog, name="JoJodle"):
         for char in self.charList.charObjects:
             if char.GetName().lower() == choices:
                 charGuess = char
-                results = self.CompareGuess(char, self.curChar)
+                results = self.CompareGuess(char, curChar)
         #track guess count and time
         user_id = i.user.id
         server_id = i.guild.id
-        tresults = await self.bot.database.track_guess(user_id, server_id, datetime.datetime.now().timestamp(), self.day, (charGuess.GetName() == self.curChar.GetName()))
+        tresults = await self.bot.database.track_guess(user_id, server_id, datetime.datetime.now().timestamp(), self.day, (charGuess.GetName() == curChar.GetName()))
         # add results
         embeds = []
         titleEmb = discord.Embed(title=f"{userName} Guessed", color=self.colors[3])

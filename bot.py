@@ -291,6 +291,11 @@ class DiscordBot(commands.Bot):
                 color=0xE02B2B,
             )
             await context.send(embed=embed)
+        elif isinstance(error, commands.CheckFailure):
+            embed = discord.Embed(
+                description="You are not the owner of the server!", color=0xE02B2B
+            )
+            await context.send(embed=embed)
         else:
             raise error
 
