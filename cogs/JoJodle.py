@@ -233,7 +233,7 @@ class Jojodle(commands.Cog, name="JoJodle"):
         self.seedChar = self.charList.GetChar(random.randint(0, self.charList.CharCount() - 1))
 
     async def CurChar(self, server_id:int) -> Character:
-        charind = random.randint(0, await self.bot.database.getchar(server_id))
+        charind = await self.bot.database.getchar(server_id)
         return self.charList.GetChar(charind)
 
     async def SetDay(self):
@@ -254,13 +254,13 @@ class Jojodle(commands.Cog, name="JoJodle"):
     async def GuildOwner(self, context: Context):
         return context.author.id == context.guild.owner_id
 
-    @commands.command(
+    @app_commands.command(
         name="setspoiler",
         description="Sets the parts to be included in the current guild",
     )
     @app_commands.describe(part="part is the last included part of JoJo's or 0 for all parts "
                                 +"ex. part=6 will not let part 7 or 8 characters show up in the JoJodle")
-    @commands.is_owner()
+    @commands.check(GuildOwner)
     async def setspoiler(self, context: Context, part: int) -> None:
         try:
             spoiler = self.charList.partsList[part]
@@ -272,7 +272,7 @@ class Jojodle(commands.Cog, name="JoJodle"):
             embed = discord.Embed(
                 description="Part must be an integer 0-8.", color=0xE02B2B
             )
-        await context.send(embed=embed)
+        await context.response.send_message(embed=embed)
 
     @commands.command(
         name="sync",
