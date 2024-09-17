@@ -798,6 +798,7 @@ class DatabaseManager:
         )
         async with results as cursor:
             result = await cursor.fetchone()
+            print(result)
             if result == None:
                 return 0
             else:
@@ -808,7 +809,7 @@ class DatabaseManager:
 
     #returns the index for the daily character accounting for spoilers
     async def getchar(self, server_id: int) -> int:
-        part = self.getspoiler(server_id)
+        part = await self.getspoiler(server_id)
         results = await self.connection.execute(
             "SELECT charind FROM charparts WHERE part=?",
             (part,)

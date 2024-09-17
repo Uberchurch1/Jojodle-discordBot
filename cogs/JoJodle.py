@@ -95,7 +95,7 @@ class CharactersList:
         ["Kars",                    "2",        "Purple,Pink",          "N/A", "Villain"],
         ["Esidisi",                 "2",        "Blue,Tan",             "N/A", "Villain"],
         ["Wamuu",                   "2",        "Tan,Yellow,Red",       "N/A", "Villain"],
-        ["Jotaro Joestar",          "3,4,6",    "Black,Gold,Green",     "Close", "Hero"],  # PART 3: 18-32
+        ["Jotaro Kujo",          "3,4,6",    "Black,Gold,Green",     "Close", "Hero"],  # PART 3: 18-32
         ["Muhammad Avdol",          "3",        "Red,Gold,Tan",         "Close", "Hero"],
         ["Kakyoin Noriaki",         "3",        "Red,Green,Gold",       "Long", "Hero"],
         ["Jean Pierre Polnareff",   "3,5",      "Grey,Black,Red",       "Close", "Hero"],
@@ -240,10 +240,12 @@ class Jojodle(commands.Cog, name="JoJodle"):
         print("(Re)Setting Day")
 
         self.day = datetime.datetime.now().strftime("%j%Y")  # update the day var
-        random.seed(self.day)  # update the daily seed
         # self.curChar = self.charList.GetChar(random.randint(0, self.charList.CharCount() - 1))  # update the current character
         await self.ResetComp()  # reset the gtracker
-
+        for i in range(9):
+            random.seed(self.day)  # update the daily seed
+            charind = random.randint(0, self.charList.partsList[i])
+            await self.bot.database.updatechar(i,charind)
         print("Finished Setting Day")
 
     async def ResetComp(self):
@@ -264,7 +266,7 @@ class Jojodle(commands.Cog, name="JoJodle"):
             spoiler = self.charList.partsList[part]
             #set the spoiler table value for this guild
             server_id = context.guild.id
-            self.bot.database.updatespoiler(server_id, part)
+            await self.bot.database.updatespoiler(server_id, part)
             embed = discord.Embed(description="Spoiler has been set to " + str(part))
         except IndexError:
             embed = discord.Embed(
