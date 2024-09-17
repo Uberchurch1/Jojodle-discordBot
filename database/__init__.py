@@ -17,7 +17,7 @@ class DatabaseManager:
         
 #JOJODLE DB COMMANDS
 
-    #add daily highscore time and/or count TODO: copy seeded
+    #add daily highscore time and/or count
     async def add_daily_hs(
         self, user_id: int, server_id: int, time: float = None, count: int = None
     ) -> int:

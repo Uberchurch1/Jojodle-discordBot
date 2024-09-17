@@ -142,7 +142,7 @@ class CharactersList:
         ["Trish Una",               "5",        "Pink,Black,Yellow",    "Close", "Hero"],
         ["Coco 'Turtle' Jumbo",     "5",        "Green,Yellow,Red",     "N/A",      "Hero"],
         ["Diavolo",                 "5",        "Pink,Purple,Green",    "Close",    "Villain"],
-        ["Vinegar Doppio",          "5",        "Pink,Purple,Brown",    "Close",    "Hero"],
+        ["Vinegar Doppio",          "5",        "Pink,Purple,Brown",    "Close",    "Villain"],
         ["Cioccolata",              "5",        "White,Blue,Green",     "Long",     "Villain"],
         ["Secco",                   "5",        "Green,Orange",         "Close",    "Villain"],
         ["Leaky-Eye Luca",          "5",        "Red,Orange,Green",     "N/A",      "Villain"],

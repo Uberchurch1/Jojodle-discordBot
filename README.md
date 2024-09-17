@@ -13,14 +13,15 @@ Jojodle is a [Wordle](https://www.nytimes.com/games/wordle/index.html "Wordle") 
 - Automatic scores and leaderboard
 - Characters from parts 1 through 7
 - Discord slash commands
+- Monthly leaderboard/reset
+- Daily leaderboard (points)
+- React messages
 ##### wip
 - Part 8 characters
 - Server wide custom character list/spoiler list
 - Global leaderboard
-- Daily leaderboard (points)
-- Monthly leaderboard/reset
 - Average
-- React messages
+- server highscores leaderbopard
 
 ### Commands
 - /guess choices:
