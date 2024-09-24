@@ -26,8 +26,16 @@ class Character:
 
     def GetName(self):
         return self.name
-    def GetParts(self):
-        return self.parts
+    async def GetParts(self, server_id: int, bot):
+        parts = ""
+        spoiler = await bot.database.get_spoiler(server_id)
+        if spoiler > 0:
+            for part in self.parts.split(","):
+                if int(part) <= spoiler:
+                    parts += part + ","
+            return parts[:-1]
+        else:
+            return self.parts
     def GetColors(self):
         return self.colors
     def GetRange(self):
@@ -42,11 +50,13 @@ class Character:
         else:
             return 0
 
-    def CompareParts(self,other):
-        if self.parts == other.parts:
+    async def CompareParts(self,other,server_id, bot):
+        sParts = await self.GetParts(server_id, bot)
+        oParts = await other.GetParts(server_id, bot)
+        if sParts == oParts:
             return 1
-        for part in self.parts.split(","):
-            if part in other.parts.split(","):
+        for part in sParts.split(","):
+            if part in oParts.split(","):
                 return 2
         return 0
 
@@ -180,7 +190,20 @@ class CharactersList:
         ["Sandman",                 "7",        "Green,Brown,Yellow", "Close", "Villain"],
         ["Pork Pie Hat Kid",        "7",        "Green,Yellow,Brown", "Long", "Villain"],
         ["Sugar Mountain",          "7",        "Pink,Black,Purple", "N/A", "N/A"],
-        ["Magenta Magenta",         "7",        "Purple", "Close", "Villain"]
+        ["Magenta Magenta",         "7",        "Purple", "Close", "Villain"],
+        ["Josuke 'Gappy' Higashikata", "8",     "White,Blue,Green", "Close", "Hero"], # PART 8: 104-
+        ["Yauho Hirose",            "8",        "Pink,Blue,Black", "Long", "Hero"],
+        ["Rai Mamezuku",            "8",        "Green,Yellow,Black", "Close", "Hero"],
+        ["Norisuke Higashikata IV", "8",        "Tan,Blue,Green", "Long", "Hero"],
+        ["Jobin Higashikata",       "8",        "White,Green,Gold", "Close", "Villain"],
+        ["Tsurugi Higashikata",     "8",        "Orange,Green,Black", "Auto", "Hero"],
+        ["Joshu Higashikata",       "8",        "Green,Blue,Yellow", "Close", "Hero"],
+        ["Holy Joestar-Kira",       "8",        "Pink,Black,White", "N/A", "Hero"],
+        ["Kei Nijimura",            "8",        "Black,White,Blue", "Auto", "Hero"],
+        ["Hato Higashikata",        "8",        "Blue,Gold", "Close", "Hero"],
+        ["Daiya Higashikata",       "8",        "Pink,Black,White", "Close", "Hero"],
+        ["Mitsuba Higashikata",     "8",        "Pink,Green,Brown", "Close", "Villain"],
+        ["Kaato Higashikata",       "8",        "Blue,Pink,Yellow", "Close", "Villain"]
 
                 ]
     charObjects = None
@@ -218,10 +241,10 @@ class Jojodle(commands.Cog, name="JoJodle"):
         self.midnightreset.start(self.channels, True)
 
 
-    def CompareGuess(self, char1, char2):
+    async def CompareGuess(self, char1, char2, server_id, bot):
         results = []
         results.append(char1.CompareName(char2))
-        results.append(char1.CompareParts(char2))
+        results.append(await char1.CompareParts(char2, server_id, bot))
         results.append(char1.CompareColors(char2))
         results.append(char1.CompareRange(char2))
         results.append(char1.CompareAlly(char2))
@@ -326,7 +349,7 @@ class Jojodle(commands.Cog, name="JoJodle"):
         # Do your stuff here
         server_id = context.guild.id
         curChar = await self.CurChar(server_id)
-        embed = discord.Embed(description=f"||Today's JoJo's character is {curChar.GetName()} from part(s): {curChar.GetParts()} their main colors are {curChar.GetColors()}||")
+        embed = discord.Embed(description=f"||Today's JoJo's character is {curChar.GetName()} from part(s): {await curChar.GetParts(server_id, self.bot)} their main colors are {curChar.GetColors()}||")
         await context.send(embed=embed)
 
     @commands.command(
@@ -354,11 +377,19 @@ class Jojodle(commands.Cog, name="JoJodle"):
     #autocomplete choices for all guess commands
     async def guess_autocomplete(self, interaction: discord.Interaction, current: str,) -> [app_commands.Choice[str]]:
         choices = []
-        for char in self.charList.charObjects:
-            choices.append(char.GetName())
+        limChoices = []
+        spoilerInd = await self.bot.database.getspoiler(interaction.guild.id,index=True,part=self.charList.partsList)
+        for i in range(self.charList.charObjects.count()):
+            if i <= spoilerInd:
+                choices.append(self.charList.GetChar(i).GetName())
+        for choice in choices:
+            if (current.lower() in choice.lower()) and (limChoices.count()<25):
+                limChoices.append(choice)
+            elif (limChoices.count()==24):
+                limChoices.append("...")
         return [
             app_commands.Choice(name=choice, value=choice)
-            for choice in choices if current.lower() in choice.lower()
+            for choice in limChoices
         ]
 
     #standard daily guess command
@@ -370,6 +401,7 @@ class Jojodle(commands.Cog, name="JoJodle"):
     @app_commands.describe(choices="The character you want to guess.")
     async def guess(self, i: discord.Interaction, choices: str):
         userName = i.user.nick if i.user.nick != None else i.user.display_name
+        user_id = i.user.id
         server_id = i.guild.id
         curChar = await self.CurChar(server_id)
         '''if datetime.datetime.now().strftime("%j%Y") != self.day:
@@ -380,10 +412,8 @@ class Jojodle(commands.Cog, name="JoJodle"):
         for char in self.charList.charObjects:
             if char.GetName().lower() == choices:
                 charGuess = char
-                results = self.CompareGuess(char, curChar)
+                results = await self.CompareGuess(char, curChar, server_id, self.bot)
         #track guess count and time
-        user_id = i.user.id
-        server_id = i.guild.id
         tresults = await self.bot.database.track_guess(user_id, server_id, datetime.datetime.now().timestamp(), self.day, (charGuess.GetName() == curChar.GetName()))
         # add results
         embeds = []
@@ -392,7 +422,7 @@ class Jojodle(commands.Cog, name="JoJodle"):
         titleEmb.set_footer(text=f"time: {tresults[0]:.2f}s, count: {tresults[1]}")
         embeds.append(titleEmb)
         embeds.append(discord.Embed(description=f"||Character: {charGuess.GetName()}||", color=self.colors[results[0]]))
-        embeds.append(discord.Embed(description=f"||Part(s): {charGuess.GetParts()}||", color=self.colors[results[1]]))
+        embeds.append(discord.Embed(description=f"||Part(s): {await charGuess.GetParts(server_id, self.bot)}||", color=self.colors[results[1]]))
         embeds.append(discord.Embed(description=f"||Colors: {charGuess.GetColors()}||", color=self.colors[results[2]]))
         embeds.append(discord.Embed(description=f"||Stand range: {charGuess.GetRange()}||", color=self.colors[results[3]]))
         embeds.append(discord.Embed(description=f"||Alliance: {charGuess.GetAlly()}||", color=self.colors[results[4]]))
@@ -412,6 +442,8 @@ class Jojodle(commands.Cog, name="JoJodle"):
     @app_commands.describe(seed="What to set the seed as (leave blank for the previous seed).")
     async def seededguess(self, i: discord.Interaction, choices: str, seed: str = None):
         userName = i.user.nick if i.user.nick != None else i.user.display_name
+        user_id = i.user.id
+        server_id = i.guild.id
         if seed != None:
             self.SetSeed(seed)
         charGuess = None
@@ -420,10 +452,8 @@ class Jojodle(commands.Cog, name="JoJodle"):
         for char in self.charList.charObjects:
             if char.GetName().lower() == choices:
                 charGuess = char
-                results = self.CompareGuess(char, self.seedChar)
+                results = await self.CompareGuess(char, self.seedChar, server_id, self.bot)
         # track guess count and time
-        user_id = i.user.id
-        server_id = i.guild.id
         tresults = await self.bot.database.track_sguess(user_id, server_id, datetime.datetime.now().timestamp(), self.seed, (charGuess.GetName() == self.seedChar.GetName()))
         # add results
         embeds = []
@@ -432,7 +462,7 @@ class Jojodle(commands.Cog, name="JoJodle"):
         titleEmb.set_footer(text=f"time: {tresults[0]:.2f}s, count: {tresults[1]}")
         embeds.append(titleEmb)
         embeds.append(discord.Embed(description=f"||You guessed {charGuess.GetName()}||", color=self.colors[results[0]]))
-        embeds.append(discord.Embed(description=f"||Part(s): {charGuess.GetParts()}||", color=self.colors[results[1]]))
+        embeds.append(discord.Embed(description=f"||Part(s): {await charGuess.GetParts(server_id, self.bot)}||", color=self.colors[results[1]]))
         embeds.append(discord.Embed(description=f"||Colors: {charGuess.GetColors()}||", color=self.colors[results[2]]))
         embeds.append(discord.Embed(description=f"||Stand range: {charGuess.GetRange()}||", color=self.colors[results[3]]))
         embeds.append(discord.Embed(description=f"||Alliance: {charGuess.GetAlly()}||", color=self.colors[results[4]]))
