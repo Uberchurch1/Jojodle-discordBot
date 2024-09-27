@@ -7,6 +7,7 @@ Version: 6.2.0
 """
 import random
 import discord
+from discord.app_commands.commands import CheckInputParameter
 from discord.ext import commands, tasks
 from discord.ext.commands import Context
 from discord import app_commands, interactions
@@ -23,10 +24,12 @@ class Character:
         self.range = range
         self.ally = ally
 
-
     def GetName(self):
         return self.name
-    async def GetParts(self, server_id: int, bot):
+
+    async def GetParts(self, server_id: int = None, bot = None):
+        if server_id == None:
+            return self.parts
         parts = ""
         spoiler = await bot.database.get_spoiler(server_id)
         if spoiler > 0:
@@ -36,6 +39,7 @@ class Character:
             return parts[:-1]
         else:
             return self.parts
+
     def GetColors(self):
         return self.colors
     def GetRange(self):
@@ -79,9 +83,6 @@ class Character:
             return 1
         else:
             return 0
-
-
-
 
 class CharactersList:
     charArray = [
@@ -213,6 +214,16 @@ class CharactersList:
     def __init__(self):
         print("init CharactersList")
         self.CheckObjects()
+        self.CheckParts()
+
+    def CheckParts(self):
+        print("checking parts")
+        for i in range(len(self.partsList)):
+            for j in range(len(self.charArray)):
+                if self.charArray[j][1].split(',')[0] == i+1:
+                    self.partsList[i] = j
+                    print(str(j) + " characters at part: "+str(i))
+                    break
 
     def CheckObjects(self):
         print("Checking Objects")
