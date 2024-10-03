@@ -455,7 +455,7 @@ class DatabaseManager:
                 )
             else:
                 print("already completed")
-                await self.addtodaily(user_id, server_id, time=result[2], count=result[1], date=date)
+                await self.addtodaily(user_id, server_id, time=result[2], count=result[1], date=date, incstreak=False)
                 return [result[2], result[1]]
 
             await self.connection.commit()
@@ -617,13 +617,23 @@ class DatabaseManager:
         #      [0]rank, [1]user_id, [2]time, [3]count, [4]created_at
         return [dtime, dcount]
 
+    # resets dailyboard scores to -1 and resets failed streaks
     async def resetdaily(self, server_id: int, date: int) -> None:
+        rows = await self.connection.execute(
+            "SELECT user_id, server_id FROM daily WHERE type=0 AND server_id=? AND rank=-1",
+            (server_id,),
+        )
+        async with rows as cursor:
+            results = await cursor.fetchall()
+            for result in results:
+                await self.addtostreaks(result[0], result[1], False)
         await self.connection.execute(
             "UPDATE daily SET rank=-1,time=-1,count=-1,points=-1 WHERE server_id=? AND date<>?",
             (server_id, date)
         )
         await self.connection.commit()
 
+    # sets ranks and points for players in the dailyboard
     async def updatedaily(self, server_id: int) -> None:
         # upd time ranks
         results = await self.connection.execute(
@@ -639,7 +649,7 @@ class DatabaseManager:
                     "UPDATE daily SET rank=?, points=? WHERE user_id=? AND server_id=? AND type=0",
                     (
                         i + 1,
-                        10-i if 1<=10 else 0,
+                        10-i if i<10 else 0,
                         results[i][0],
                         server_id
                     )
@@ -658,7 +668,7 @@ class DatabaseManager:
                     "UPDATE daily SET rank=?, points=? WHERE user_id=? AND server_id=? AND type=1",
                     (
                         i + 1,
-                        10-i if 1<=10 else 0,
+                        10-i if i<10 else 0,
                         results[i][0],
                         server_id
                     )
@@ -666,7 +676,8 @@ class DatabaseManager:
 
         await self.connection.commit()
 
-    async def addtodaily(self, user_id: int, server_id: int, date: int, time: float = None, count: int = None):
+    # adds time and count results to the dailyboard and calls addtostreaks
+    async def addtodaily(self, user_id: int, server_id: int, date: int, time: float = None, count: int = None, incstreak: bool = True) -> None:
         print("adding to daily")
         rows = await self.connection.execute(
             "SELECT user_id FROM daily WHERE user_id=? AND server_id=?",
@@ -689,7 +700,47 @@ class DatabaseManager:
                     (time, count, date, user_id, server_id)
                 )
         await self.connection.commit()
+        if incstreak:
+            await self.addtostreaks(user_id, server_id)
 
+    # increments or resets players guess streak
+    async def addtostreaks(self, user_id: int, server_id: int, completed: bool= True):
+        rows = await self.connection.execute(
+            "SELECT streak FROM streaks WHERE user_id=? AND server_id=?",
+            (user_id, server_id)
+        )
+        async with rows as cursor:
+            results = await cursor.fetchone()
+            if results == None:
+                await self.connection.execute(
+                    "INSERT INTO streaks(user_id,server_id,streak) VALUES (?,?,?)",
+                    (user_id,
+                     server_id,
+                     1 if completed else 0)
+                )
+            else:
+                await self.connection.execute(
+                    "UPDATE streaks SET streak=? WHERE user_id=? AND server_id=?",
+                    (results[0]+1 if completed else 0,
+                     user_id,
+                     server_id)
+                )
+        await self.connection.commit()
+
+    # returns user's current streak
+    async def getstreak(self, user_id: int, server_id: int) -> int:
+        rows = await self.connection.execute(
+            "SELECT streak FROM streaks WHERE user_id=? AND server_id=?",
+            (user_id, server_id)
+        )
+        async with rows as cursor:
+            results = await cursor.fetchone()
+            if results == None:
+                return 0
+            else:
+                return results[0]
+
+    # returns formatted results of the monthlyboard scores
     async def monthlyboard(self, server_id: int, number:int = 10) -> list:
         await self.updatemonthly(server_id)
         # get daily leaderboard
@@ -709,6 +760,7 @@ class DatabaseManager:
         #      [0]rank, [1]user_id, [2]time, [3]count, [4]created_at
         return monthres
 
+    # adds players points earned from the daily to the monthlyboard
     async def addtomonthly(self, server_id: int):
         print("adding to monthly")
         rows = await self.connection.execute(
@@ -743,12 +795,13 @@ class DatabaseManager:
                                 "UPDATE monthly SET time=?, count=?, points=? WHERE user_id=? AND server_id=?",
                                 (time if result[0]>time else result[0],
                                  count if result[1]>count else result[1],
-                                 points + result[2],
+                                 points + result[2] if points > 0 else result[2],
                                  user_id,
                                  server_id)
                             )
         await self.connection.commit()
 
+    # sets the ranks based on points for the monthly board
     async def updatemonthly(self, server_id: int) -> None:
         # upd time ranks
         results = await self.connection.execute(
@@ -798,7 +851,6 @@ class DatabaseManager:
         )
         async with results as cursor:
             result = await cursor.fetchone()
-            print(result)
             if result == None:
                 return 0
             else:

@@ -17,8 +17,9 @@ Jojodle is a [Wordle](https://www.nytimes.com/games/wordle/index.html "Wordle") 
 - Daily leaderboard (points)
 - React messages
 - Server wide custom character list/spoiler list
-##### wip
 - Part 8 characters
+- Streaks
+##### wip
 - Global leaderboard
 - Average
 - server highscores leaderboard

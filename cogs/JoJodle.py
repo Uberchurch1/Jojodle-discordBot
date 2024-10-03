@@ -31,7 +31,7 @@ class Character:
         if server_id == None:
             return self.parts
         parts = ""
-        spoiler = await bot.database.get_spoiler(server_id)
+        spoiler = await bot.database.getspoiler(server_id)
         if spoiler > 0:
             for part in self.parts.split(","):
                 if int(part) <= spoiler:
@@ -192,6 +192,7 @@ class CharactersList:
         ["Pork Pie Hat Kid",        "7",        "Green,Yellow,Brown", "Long", "Villain"],
         ["Sugar Mountain",          "7",        "Pink,Black,Purple", "N/A", "N/A"],
         ["Magenta Magenta",         "7",        "Purple", "Close", "Villain"],
+        ["Blackmoore",              "7",        "Blue,Yellow,Black", "Close", "Villain"],
         ["Josuke 'Gappy' Higashikata", "8",     "White,Blue,Green", "Close", "Hero"], # PART 8: 104-
         ["Yauho Hirose",            "8",        "Pink,Blue,Black", "Long", "Hero"],
         ["Rai Mamezuku",            "8",        "Green,Yellow,Black", "Close", "Hero"],
@@ -209,7 +210,7 @@ class CharactersList:
                 ]
     charObjects = None
     # parts:    all   1  2   3   4   5   6   7    8
-    partsList = [103, 8, 17, 32, 55, 74, 89, 103, 103] # list of indices for charList
+    partsList = [103, 8, 17, 32, 55, 74, 89, 105, 128] # list of indices for charList
 
     def __init__(self):
         print("init CharactersList")
@@ -218,11 +219,11 @@ class CharactersList:
 
     def CheckParts(self):
         print("checking parts")
-        for i in range(len(self.partsList)):
+        for i in range(1,len(self.partsList)):
             for j in range(len(self.charArray)):
-                if self.charArray[j][1].split(',')[0] == i+1:
+                if self.charArray[j][1].split(',')[0] == str(i+1):
                     self.partsList[i] = j
-                    print(str(j) + " characters at part: "+str(i))
+                    print(f"part: {i} Character Ind: {j}")
                     break
 
     def CheckObjects(self):
@@ -389,14 +390,14 @@ class Jojodle(commands.Cog, name="JoJodle"):
     async def guess_autocomplete(self, interaction: discord.Interaction, current: str,) -> [app_commands.Choice[str]]:
         choices = []
         limChoices = []
-        spoilerInd = await self.bot.database.getspoiler(interaction.guild.id,index=True,part=self.charList.partsList)
-        for i in range(self.charList.charObjects.count()):
+        spoilerInd = await self.bot.database.getspoiler(interaction.guild.id,index=True,partslist=self.charList.partsList)
+        for i in range(len(self.charList.charObjects)):
             if i <= spoilerInd:
                 choices.append(self.charList.GetChar(i).GetName())
         for choice in choices:
-            if (current.lower() in choice.lower()) and (limChoices.count()<25):
+            if (current.lower() in choice.lower()) and (len(limChoices)<25):
                 limChoices.append(choice)
-            elif (limChoices.count()==24):
+            elif (len(limChoices)==24):
                 limChoices.append("...")
         return [
             app_commands.Choice(name=choice, value=choice)
@@ -426,10 +427,11 @@ class Jojodle(commands.Cog, name="JoJodle"):
                 results = await self.CompareGuess(char, curChar, server_id, self.bot)
         #track guess count and time
         tresults = await self.bot.database.track_guess(user_id, server_id, datetime.datetime.now().timestamp(), self.day, (charGuess.GetName() == curChar.GetName()))
+        streak = await self.bot.database.getstreak(user_id, server_id)
         # add results
         embeds = []
         titleEmb = discord.Embed(title=f"{userName} Guessed", color=self.colors[3])
-        titleEmb.set_author(icon_url=i.user.avatar, name=f"Daily: {datetime.datetime.now().strftime('%x')}")
+        titleEmb.set_author(icon_url=i.user.avatar, name=f"Daily: {datetime.datetime.now().strftime('%x')} Streak: {streak}")
         titleEmb.set_footer(text=f"time: {tresults[0]:.2f}s, count: {tresults[1]}")
         embeds.append(titleEmb)
         embeds.append(discord.Embed(description=f"||Character: {charGuess.GetName()}||", color=self.colors[results[0]]))

@@ -12,6 +12,11 @@ CREATE TABLE IF NOT EXISTS `shs` (
   `count` int(11) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+CREATE TABLE IF NOT EXISTS `streaks` (
+  `user_id` varchar(20) NOT NULL,
+  `server_id` varchar(20) NOT NULL,
+  `streak` int(11) NOT NULL DEFAULT 0
+);
 CREATE TABLE IF NOT EXISTS `dleaderboard` (
   `user_id` varchar(20) NOT NULL,
   `server_id` varchar(20) NOT NULL,
