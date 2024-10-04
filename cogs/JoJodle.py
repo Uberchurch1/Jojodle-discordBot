@@ -222,7 +222,7 @@ class CharactersList:
         for i in range(1,len(self.partsList)):
             for j in range(len(self.charArray)):
                 if self.charArray[j][1].split(',')[0] == str(i+1):
-                    self.partsList[i] = j
+                    self.partsList[i] = j-1
                     print(f"part: {i} Character Ind: {j}")
                     break
                 elif j == len(self.charArray)-1:
