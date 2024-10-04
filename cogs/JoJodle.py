@@ -194,7 +194,7 @@ class CharactersList:
         ["Magenta Magenta",         "7",        "Purple", "Close", "Villain"],
         ["Blackmoore",              "7",        "Blue,Yellow,Black", "Close", "Villain"],
         ["Josuke 'Gappy' Higashikata", "8",     "White,Blue,Green", "Close", "Hero"], # PART 8: 104-
-        ["Yauho Hirose",            "8",        "Pink,Blue,Black", "Long", "Hero"],
+        ["Yasuho Hirose",            "8",        "Pink,Blue,Black", "Long", "Hero"],
         ["Rai Mamezuku",            "8",        "Green,Yellow,Black", "Close", "Hero"],
         ["Norisuke Higashikata IV", "8",        "Tan,Blue,Green", "Long", "Hero"],
         ["Jobin Higashikata",       "8",        "White,Green,Gold", "Close", "Villain"],
