@@ -210,7 +210,7 @@ class CharactersList:
                 ]
     charObjects = None
     # parts:    all   1  2   3   4   5   6   7    8
-    partsList = [103, 8, 17, 32, 55, 74, 89, 105, 118] # list of indices for charList
+    partsList = [117, 8, 16, 31, 54, 73, 88, 104, 117] # list of indices for charList
 
     def __init__(self):
         print("init CharactersList")
@@ -223,7 +223,7 @@ class CharactersList:
             for j in range(len(self.charArray)):
                 if self.charArray[j][1].split(',')[0] == str(i+1):
                     self.partsList[i] = j-1
-                    print(f"part: {i} Character Ind: {j}")
+                    print(f"part: {i} Character Ind: {j-1}")
                     break
                 elif j == len(self.charArray)-1:
                     print(f"part: {i} Character Ind: {j}")
