@@ -210,7 +210,7 @@ class CharactersList:
                 ]
     charObjects = None
     # parts:    all   1  2   3   4   5   6   7    8
-    partsList = [103, 8, 17, 32, 55, 74, 89, 105, 128] # list of indices for charList
+    partsList = [103, 8, 17, 32, 55, 74, 89, 105, 118] # list of indices for charList
 
     def __init__(self):
         print("init CharactersList")
@@ -224,6 +224,11 @@ class CharactersList:
                 if self.charArray[j][1].split(',')[0] == str(i+1):
                     self.partsList[i] = j
                     print(f"part: {i} Character Ind: {j}")
+                    break
+                elif j == len(self.charArray)-1:
+                    print(f"part: {i} Character Ind: {j}")
+                    self.partsList[i] = j
+                    self.partsList[0] = j
                     break
 
     def CheckObjects(self):
@@ -251,7 +256,7 @@ class Jojodle(commands.Cog, name="JoJodle"):
         self.cemoji = "\U0001F389"
         self.channels = None
         self.midnightreset.start(self.channels, True)
-
+        self.charList.CheckObjects()
 
     async def CompareGuess(self, char1, char2, server_id, bot):
         results = []
